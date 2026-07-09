@@ -51,4 +51,12 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(dto),
     }),
+
+  /** Unified helper used by Contact and Partner pages */
+  submitInquiry: (dto: { name: string; email: string; phone?: string; message: string; type: 'contact' | 'partner' }) => {
+    const { type, ...body } = dto;
+    return type === 'partner'
+      ? request<{ received: boolean }>('/inquiries/partner', { method: 'POST', body: JSON.stringify(body) })
+      : request<{ received: boolean }>('/inquiries/contact', { method: 'POST', body: JSON.stringify(body) });
+  },
 };

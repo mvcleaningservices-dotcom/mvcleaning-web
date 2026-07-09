@@ -1,0 +1,175 @@
+/**
+ * MV Cleaning Services — Design Tokens
+ * =====================================
+ * Single source of truth for the entire design system.
+ * Consumed by: web/src/index.css  and  admin/src/index.css
+ *
+ * Brand Swap Playbook (UI_UX_Overhaul_Plan.md §11):
+ *   To swap the brand, only change the values in the "PRIMARY" and "ACCENT"
+ *   sections below — every component and screen updates automatically.
+ *
+ * Token categories:
+ *   1. Color — primary tonal scale, accent, semantic, neutrals, surfaces
+ *   2. Typography — Inter type ramp (size / line-height / weight)
+ *   3. Spacing — 4px base, 8pt grid
+ *   4. Radius — sm → pill
+ *   5. Elevation — sm → lg + focus ring
+ *   6. Motion — duration + easing curves
+ *   7. Z-index — layering scale
+ */
+
+:root {
+  /* ─────────────────────────────────────────────────────────────
+   * 1. COLOR
+   * ─────────────────────────────────────────────────────────────
+   * Primary — fresh, clean, trustworthy teal  ← SWAP HERE for brand
+   * All pairs verified WCAG AA against white and surface backgrounds.
+   */
+
+  --color-primary-50:  #f0fdfa;
+  --color-primary-100: #ccfbf1;
+  --color-primary-200: #99f6e4;
+  --color-primary-300: #5eead4;
+  --color-primary-400: #2dd4bf;
+  --color-primary-500: #14b8a6;
+  --color-primary-600: #0d9488;   /* BASE — buttons, links, nav active */
+  --color-primary-700: #0f766e;   /* hover state */
+  --color-primary-800: #115e59;
+  --color-primary-900: #134e4a;
+
+  /* Accent — warm energy for CTAs / highlights (orange)  ← SWAP HERE */
+  --color-accent-500:  #f97316;   /* BASE */
+  --color-accent-600:  #ea580c;   /* hover */
+  --color-accent-100:  #ffedd5;   /* tint for banners */
+
+  /* Semantic */
+  --color-success:     #16a34a;
+  --color-success-bg:  #f0fdf4;
+  --color-warning:     #d97706;
+  --color-warning-bg:  #fffbeb;
+  --color-error:       #dc2626;
+  --color-error-bg:    #fef2f2;
+  --color-info:        #2563eb;
+  --color-info-bg:     #eff6ff;
+
+  /* Neutrals — slate ramp */
+  --color-slate-50:  #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+
+  /* Semantic text + surface aliases */
+  --color-text-primary:   var(--color-slate-900);  /* headings, body */
+  --color-text-secondary: var(--color-slate-600);  /* secondary labels */
+  --color-text-muted:     var(--color-slate-400);  /* hints, placeholders */
+  --color-text-on-primary: #ffffff;               /* text on primary bg */
+  --color-text-on-accent:  #ffffff;               /* text on accent bg */
+
+  --color-surface:    #ffffff;
+  --color-background: var(--color-slate-50);       /* page background */
+  --color-border:     var(--color-slate-200);
+  --color-border-strong: var(--color-slate-300);
+
+  /* ─────────────────────────────────────────────────────────────
+   * 2. TYPOGRAPHY — Inter  ← SWAP fontFamily here for brand
+   * ─────────────────────────────────────────────────────────────
+   */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+  /* Size / line-height / weight */
+  --text-display-size:  48px;  --text-display-lh: 56px;  --text-display-w: 800;
+  --text-h1-size:       32px;  --text-h1-lh:      40px;  --text-h1-w:      700;
+  --text-h2-size:       24px;  --text-h2-lh:      32px;  --text-h2-w:      700;
+  --text-h3-size:       20px;  --text-h3-lh:      28px;  --text-h3-w:      600;
+  --text-h4-size:       18px;  --text-h4-lh:      26px;  --text-h4-w:      600;
+  --text-body-lg-size:  18px;  --text-body-lg-lh: 28px;  --text-body-lg-w: 400;
+  --text-body-size:     16px;  --text-body-lh:    24px;  --text-body-w:    400;
+  --text-sm-size:       14px;  --text-sm-lh:      20px;  --text-sm-w:      400;
+  --text-caption-size:  12px;  --text-caption-lh: 16px;  --text-caption-w: 500;
+  --text-overline-size: 11px;  --text-overline-lh:16px;  --text-overline-w: 600;
+
+  /* ─────────────────────────────────────────────────────────────
+   * 3. SPACING — 4px base, 8pt grid
+   * ─────────────────────────────────────────────────────────────
+   */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* Layout */
+  --container-max: 1140px;
+  --container-pad: var(--space-5);
+
+  /* ─────────────────────────────────────────────────────────────
+   * 4. RADIUS — friendly, consumer-warm
+   * ─────────────────────────────────────────────────────────────
+   */
+  --radius-sm:   6px;
+  --radius-md:   10px;   /* buttons, inputs */
+  --radius-lg:   14px;   /* cards */
+  --radius-xl:   20px;   /* large cards, hero panels */
+  --radius-2xl:  28px;
+  --radius-pill: 9999px; /* chips, badges */
+
+  /* ─────────────────────────────────────────────────────────────
+   * 5. ELEVATION — soft, light-theme
+   * ─────────────────────────────────────────────────────────────
+   */
+  --shadow-sm:  0 1px 2px rgba(16,24,40,.05);
+  --shadow-md:  0 4px 12px rgba(16,24,40,.08);
+  --shadow-lg:  0 12px 32px rgba(16,24,40,.10);
+  --shadow-xl:  0 24px 48px rgba(16,24,40,.12);
+  --shadow-focus: 0 0 0 3px var(--color-primary-200);
+
+  /* ─────────────────────────────────────────────────────────────
+   * 6. MOTION — purposeful, respects prefers-reduced-motion
+   * ─────────────────────────────────────────────────────────────
+   */
+  --duration-fast:   150ms;
+  --duration-base:   220ms;
+  --duration-slow:   320ms;
+  --duration-slower: 480ms;
+
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);   /* default */
+  --ease-entrance:  cubic-bezier(0, 0, 0.2, 1);   /* elements entering */
+  --ease-exit:      cubic-bezier(0.4, 0, 1, 1);   /* elements leaving */
+  --ease-spring:    cubic-bezier(0.34, 1.56, 0.64, 1); /* playful bounce */
+
+  /* ─────────────────────────────────────────────────────────────
+   * 7. Z-INDEX — layering scale
+   * ─────────────────────────────────────────────────────────────
+   */
+  --z-base:    0;
+  --z-raised:  10;
+  --z-dropdown: 100;
+  --z-sticky:  200;
+  --z-overlay: 300;
+  --z-modal:   400;
+  --z-toast:   500;
+}
+
+/* Reduced-motion: disable all transitions/animations */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
