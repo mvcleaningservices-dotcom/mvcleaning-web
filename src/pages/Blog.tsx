@@ -1,17 +1,42 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Calendar, Clock } from 'lucide-react';
+import { ArrowRight, Clock, BookOpen } from 'lucide-react';
 import { Seo } from '../components/Seo';
+import { Reveal } from '../components/ScrollReveal';
 import { api } from '../api';
 
 interface Post { id: string; slug: string; title: string; excerpt: string; publishedAt: string; }
+
+const FALLBACK_POSTS: Post[] = [
+  {
+    id: 'f1', slug: 'top-5-kitchen-cleaning-hacks',
+    title: 'Top 5 Kitchen Cleaning Hacks for Indian Homes',
+    excerpt: 'Turmeric stains and oil grease can be stubborn. Here are 5 easy hacks to keep your kitchen spotless.',
+    publishedAt: new Date(Date.now() - 7 * 86400000).toISOString()
+  },
+  {
+    id: 'f2', slug: 'why-deep-cleaning-matters',
+    title: 'Why Deep Cleaning Before Festivals is Essential',
+    excerpt: 'Festivals bring joy, but also guests. Discover why a professional deep clean is the best preparation.',
+    publishedAt: new Date(Date.now() - 14 * 86400000).toISOString()
+  },
+  {
+    id: 'f3', slug: 'maintaining-fabric-sofas',
+    title: 'The Ultimate Guide to Maintaining Fabric Sofas',
+    excerpt: 'Fabric sofas are beautiful but attract dust and stains. Learn how to maintain them and when to call the pros.',
+    publishedAt: new Date(Date.now() - 21 * 86400000).toISOString()
+  }
+];
 
 export function Blog() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.listBlogPosts().then(setPosts).catch(() => {}).finally(() => setLoading(false));
+    api.listBlogPosts()
+      .then(fetched => setPosts(fetched.length > 0 ? fetched : FALLBACK_POSTS))
+      .catch(() => setPosts(FALLBACK_POSTS))
+      .finally(() => setLoading(false));
   }, []);
 
   return (
@@ -42,31 +67,32 @@ export function Blog() {
                 </div>
               ))}
             </div>
-          ) : posts.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--color-text-muted)' }}>
-              <Calendar size={40} style={{ margin: '0 auto 16px', opacity: 0.3 }} />
-              <p style={{ fontSize: 16 }}>No articles yet — check back soon!</p>
-            </div>
           ) : (
-            <div className="blog-grid">
-              {posts.map(p => (
-                <Link key={p.id} to={`/blog/${p.slug}`} className="blog-card">
-                  <div className="blog-card-cover">
-                    <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, var(--color-primary-50), var(--color-primary-100))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-400)' }}>
-                      <Calendar size={40} />
-                    </div>
-                  </div>
-                  <div className="blog-card-body">
-                    <div className="blog-card-date">
-                      <Clock size={12} style={{ display: 'inline', marginRight: 4 }} aria-hidden="true" />
-                      {new Date(p.publishedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
-                    </div>
-                    <div className="blog-card-title">{p.title}</div>
-                    <div className="blog-card-excerpt">{p.excerpt || 'Read the full article for tips and insights.'}</div>
-                    <div className="blog-card-read-more">Read article <ArrowRight size={13} aria-hidden="true" /></div>
-                  </div>
-                </Link>
-              ))}
+            <div className="blog-grid reveal-stagger">
+              {posts.map((p, i) => {
+                const isFeatured = i === 0;
+                return (
+                  <Reveal key={p.id} delay={i * 100} className={isFeatured ? 'featured-post-wrap' : ''}>
+                    <Link to={`/blog/${p.slug}`} className={`blog-card ${isFeatured ? 'featured' : ''}`} style={isFeatured ? { gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 0, minHeight: 340 } : {}}>
+                      <div className="blog-card-cover" style={isFeatured ? { height: '100%', minHeight: 300 } : {}}>
+                        <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, var(--color-primary-50), var(--color-primary-100))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-400)' }}>
+                          <BookOpen size={isFeatured ? 64 : 40} />
+                        </div>
+                      </div>
+                      <div className="blog-card-body" style={isFeatured ? { display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: 'var(--space-8)' } : {}}>
+                        <div className="blog-card-date">
+                          <Clock size={12} style={{ display: 'inline', marginRight: 4 }} aria-hidden="true" />
+                          {new Date(p.publishedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+                          {isFeatured && <span style={{ marginLeft: 12, background: 'var(--color-primary-100)', color: 'var(--color-primary-700)', padding: '2px 8px', borderRadius: 12, fontSize: 11, fontWeight: 700 }}>FEATURED</span>}
+                        </div>
+                        <div className="blog-card-title" style={isFeatured ? { fontSize: 'clamp(20px, 3vw, 28px)', marginBottom: 16 } : {}}>{p.title}</div>
+                        <div className="blog-card-excerpt" style={isFeatured ? { fontSize: 16, marginBottom: 24, lineHeight: 1.6 } : {}}>{p.excerpt || 'Read the full article for tips and insights.'}</div>
+                        <div className="blog-card-read-more" style={isFeatured ? { marginTop: 'auto' } : {}}>Read article <ArrowRight size={13} aria-hidden="true" /></div>
+                      </div>
+                    </Link>
+                  </Reveal>
+                );
+              })}
             </div>
           )}
         </div>

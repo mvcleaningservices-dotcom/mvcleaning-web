@@ -1,21 +1,48 @@
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 /**
- * Sets the page <title> and meta description per-page (scope §5 "SEO-friendly").
- * Deliberately dependency-free (no react-helmet) — a Vite SPA doesn't need a
- * full head-management library for eight static pages.
+ * Sets the page <title>, meta description, and Open Graph tags per-page.
+ * Dependency-free — a Vite SPA doesn't need react-helmet for static pages.
  */
-export function Seo({ title, description }: { title: string; description: string }) {
+export function Seo({
+  title,
+  description,
+  image,
+}: {
+  title: string;
+  description: string;
+  image?: string;
+}) {
+  const location = useLocation();
+
   useEffect(() => {
-    document.title = `${title} | MV Cleaning Services`;
-    let meta = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement('meta');
-      meta.setAttribute('name', 'description');
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute('content', description);
-  }, [title, description]);
+    const fullTitle = `${title} | MV Cleaning Services`;
+    document.title = fullTitle;
+
+    const setMeta = (attr: string, key: string, value: string) => {
+      let el = document.querySelector(`meta[${attr}="${key}"]`);
+      if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute(attr, key);
+        document.head.appendChild(el);
+      }
+      el.setAttribute('content', value);
+    };
+
+    setMeta('name', 'description', description);
+
+    // Open Graph
+    setMeta('property', 'og:title', fullTitle);
+    setMeta('property', 'og:description', description);
+    setMeta('property', 'og:url', window.location.origin + location.pathname);
+    if (image) setMeta('property', 'og:image', image);
+
+    // Twitter
+    setMeta('name', 'twitter:title', fullTitle);
+    setMeta('name', 'twitter:description', description);
+    if (image) setMeta('name', 'twitter:image', image);
+  }, [title, description, image, location.pathname]);
 
   return null;
 }

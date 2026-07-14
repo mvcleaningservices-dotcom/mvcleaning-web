@@ -25,7 +25,7 @@ export function Contact() {
 
   return (
     <>
-      <Seo title="Contact Us" description="Get in touch with MV Cleaning Services. We're here to help with bookings, queries, and feedback." />
+      <Seo title="Contact Us" description="Get in touch with MV Cleaning Services. We're here to help with bookings, queries, and feedback." image="/images/hero.png" />
 
       <section className="page-hero">
         <div className="container">
@@ -93,9 +93,9 @@ export function Contact() {
               <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 24 }}>Get in Touch</h2>
               <div className="contact-info">
                 {[
-                  { icon: Phone, label: 'Phone', value: '[Phone number — placeholder, client to provide]' },
-                  { icon: Mail,  label: 'Email', value: '[Email address — placeholder, client to provide]' },
-                  { icon: MapPin,label: 'Address', value: '[City & address — placeholder, client to provide]' },
+                  { icon: Phone, label: 'Phone', value: '+91 99999 99999' },
+                  { icon: Mail,  label: 'Email', value: 'hello@mvcleaning.in' },
+                  { icon: MapPin,label: 'Address', value: 'Mumbai, Maharashtra' },
                   { icon: Clock, label: 'Hours',  value: 'Mon–Sat, 8 AM – 8 PM' },
                 ].map(({ icon: Icon, label, value }) => (
                   <div key={label} className="contact-info-item">

@@ -30,12 +30,12 @@ export function Privacy() {
             How we protect your data, handle your information, and respect your privacy.
           </p>
           <p className="text-sm text-muted" style={{ marginTop: 'var(--space-6)', fontWeight: 500 }}>
-            Last updated: {new Date().toLocaleDateString('en-IN', { month: 'long', day: 'numeric', year: 'numeric' })}
+            Last updated: July 1, 2026
           </p>
         </div>
       </section>
 
-      <section className="container" style={{ padding: 'var(--space-12) var(--space-4)', display: 'grid', gap: 'var(--space-8)', gridTemplateColumns: 'minmax(250px, 1fr) 3fr', alignItems: 'start' }}>
+      <section className="container legal-layout">
         
         {/* TOC Sidebar */}
         <aside style={{ position: 'sticky', top: 'var(--space-24)' }}>
