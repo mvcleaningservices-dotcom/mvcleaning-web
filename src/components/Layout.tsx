@@ -76,7 +76,7 @@ export function Layout() {
         <div className="container header-inner">
           {/* Logo */}
           <Link to="/" className="logo" aria-label="MV Cleaning Services — home" style={{ display: 'block', height: 38 }}>
-            <img src="/images/logo.jpeg" alt="MV Cleaning Services" style={{ height: 38, filter: 'invert(1)', mixBlendMode: 'multiply' }} />
+            <img src="/images/logo_light.png" alt="MV Cleaning Services" style={{ height: 38, borderRadius: 4 }} />
           </Link>
 
           {/* Desktop nav */}

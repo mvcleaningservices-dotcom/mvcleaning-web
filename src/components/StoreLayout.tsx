@@ -49,7 +49,7 @@ function StoreShell() {
         <div className="store-header-inner">
           {/* Logo */}
           <Link to="/" className="app-logo" aria-label="MV Cleaning Home" style={{ display: 'block', height: 34 }}>
-            <img src="/images/logo.jpeg" alt="MV Cleaning Services" style={{ height: 34, filter: 'invert(1)', mixBlendMode: 'multiply' }} />
+            <img src="/images/logo_light.png" alt="MV Cleaning Services" style={{ height: 34, borderRadius: 4 }} />
           </Link>
 
           {/* Location pill */}
