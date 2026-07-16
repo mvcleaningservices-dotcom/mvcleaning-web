@@ -76,7 +76,7 @@ export function Layout() {
         <div className="container header-inner">
           {/* Logo */}
           <Link to="/" className="logo" aria-label="MV Cleaning Services — home" style={{ display: 'block', height: 38 }}>
-            <img src="/images/logo_light.png" alt="MV Cleaning Services" style={{ height: 38, borderRadius: 4 }} />
+            <img src="/images/logo_light.webp" alt="MV Cleaning Services" style={{ height: 38, borderRadius: 4 }} />
           </Link>
 
           {/* Desktop nav */}
@@ -143,7 +143,7 @@ export function Layout() {
             {/* Brand column */}
             <div className="footer-brand">
               <div className="footer-brand-logo" style={{ display: 'block', height: 38 }}>
-                <img src="/images/logo.jpeg" alt="MV Cleaning Services" style={{ height: 38, mixBlendMode: 'screen' }} />
+                <img src="/images/logo.webp" alt="MV Cleaning Services" style={{ height: 38, mixBlendMode: 'screen' }} />
               </div>
               <p className="footer-tagline">
                 Professional home cleaning, booked in a few taps. Trusted by hundreds of happy homes.

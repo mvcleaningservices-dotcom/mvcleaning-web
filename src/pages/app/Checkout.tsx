@@ -21,28 +21,50 @@ function nextSevenDays() {
  * CheckoutScreen and uses the same backend. Dev/test payment; live Razorpay web
  * checkout lands in W6. */
 export function Checkout() {
-  const { profile, pincode } = useAuth();
+  const { profile, pincode, setPincode } = useAuth();
   const { items, total, clear, remove } = useCart();
 
   const [date, setDate] = useState('');
   const [timeSlot, setTimeSlot] = useState('');
   const [address, setAddress] = useState('');
+  // Collected here rather than as a gate on the homepage: it's a delivery detail
+  // (we can't send anyone without it), not a condition for browsing.
+  const [pin, setPin] = useState(pincode || '');
   const [payFromWallet, setPayFromWallet] = useState(false);
   const [walletBalance, setWalletBalance] = useState(0);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [placedOrder, setPlacedOrder] = useState<string | null>(null);
+  // Set when the entered pincode has no services — we capture a lead instead of
+  // dead-ending someone who has already logged in to book.
+  const [unserved, setUnserved] = useState(false);
+  const [leadSent, setLeadSent] = useState(false);
 
   useEffect(() => {
     if (profile?.address) setAddress(profile.address);
+    if (profile?.pincode && !pin) setPin(profile.pincode);
     api.getWallet().then((w) => setWalletBalance(w.balance)).catch(() => {});
+    // `pin` intentionally omitted: this only seeds the initial value from the
+    // profile and must not fight the user as they type.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
+
+  // Re-check availability whenever a complete pincode is entered.
+  useEffect(() => {
+    if (!/^\d{6}$/.test(pin)) { setUnserved(false); return; }
+    let cancelled = false;
+    api.listAvailableServices(pin)
+      .then((list) => { if (!cancelled) setUnserved(list.length === 0); })
+      .catch(() => { if (!cancelled) setUnserved(false); }); // never block on a failed check
+    return () => { cancelled = true; };
+  }, [pin]);
 
   // Nothing to check out (and not just-placed) → back to discovery.
   if (items.length === 0 && !placedOrder) return <Navigate to="/" replace />;
 
   const days = nextSevenDays();
-  const valid = date.length > 5 && !!timeSlot && address.trim().length > 5;
+  const pinValid = /^\d{6}$/.test(pin);
+  const valid = date.length > 5 && !!timeSlot && address.trim().length > 5 && pinValid && !unserved;
 
   const placeBooking = async () => {
     setBusy(true);
@@ -53,9 +75,11 @@ export function Checkout() {
         scheduledDate: date,
         timeSlot,
         address: address.trim(),
-        pincode: pincode || '',
+        pincode: pin,
         advanceMethod: payFromWallet ? 'wallet' : 'razorpay',
       });
+      // Remember the area for next time / for the homepage filter.
+      setPincode(pin);
       if (res.payment.required && res.payment.provider === 'test') {
         await api.testConfirm(res.booking.id);
       }
@@ -111,7 +135,67 @@ export function Checkout() {
           {/* Address */}
           <section className="co-card">
             <div className="co-card-head"><MapPin size={16} /><h2>Service address</h2></div>
-            <textarea className="co-textarea" placeholder="Flat / house no, street, landmark" value={address} onChange={(e) => setAddress(e.target.value)} />
+            {/* autoComplete lets the browser/phone fill a saved address. Without
+                it, every customer hand-types their address at the exact point
+                they're most likely to abandon. */}
+            <label className="sr-only" htmlFor="co-address">Service address</label>
+            <textarea
+              id="co-address"
+              className="co-textarea"
+              autoComplete="street-address"
+              placeholder="Flat / house no, street, landmark"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+
+            <label className="auth-label" htmlFor="co-pincode" style={{ marginTop: 12 }}>Pincode</label>
+            <input
+              id="co-pincode"
+              className="auth-input"
+              inputMode="numeric"
+              autoComplete="postal-code"
+              placeholder="6-digit pincode"
+              maxLength={6}
+              value={pin}
+              onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              aria-invalid={unserved}
+            />
+
+            {/* Option (b): an unserved area captures a lead rather than dead-ending
+                someone who has already logged in — they've proven real intent. */}
+            {unserved && !leadSent && (
+              <div className="co-unserved">
+                <p><strong>We don't cover {pin} yet.</strong></p>
+                <p>Leave your number and we'll call you the moment we do.</p>
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  style={{ marginTop: 10 }}
+                  onClick={async () => {
+                    try {
+                      await api.submitContact({
+                        name: profile?.name || 'Website visitor',
+                        email: '',
+                        phone: profile?.mobile || '',
+                        message: `Service requested in unserved pincode ${pin}. Wanted: ${items
+                          .map((s) => s.name)
+                          .join(', ')}.`,
+                      });
+                      setLeadSent(true);
+                    } catch {
+                      setError('Could not send that just now — please try again.');
+                    }
+                  }}
+                >
+                  Notify me when you're in my area
+                </button>
+              </div>
+            )}
+            {leadSent && (
+              <div className="co-trust" style={{ marginTop: 10 }}>
+                <ShieldCheck size={16} /> Thanks — we'll be in touch when we reach {pin}.
+              </div>
+            )}
           </section>
 
           {/* Payment */}
@@ -139,14 +223,38 @@ export function Checkout() {
               <div className="co-item-thumb">{serviceImage(s) ? <img src={serviceImage(s)} alt="" /> : null}</div>
               <span className="co-item-name">{s.name}</span>
               <span className="co-item-price">₹{s.price}</span>
-              <button className="co-item-remove" onClick={() => remove(s.id)} aria-label={`Remove ${s.name}`}>×</button>
+              {/* Confirmed: this is a single mis-tap away from deleting the very
+                  service the customer is about to pay for, and there's no undo. */}
+              <button
+                className="co-item-remove"
+                onClick={() => {
+                  if (window.confirm(`Remove ${s.name} from your booking?`)) remove(s.id);
+                }}
+                aria-label={`Remove ${s.name}`}
+              >
+                ×
+              </button>
             </div>
           ))}
           <div className="co-sep" />
           <div className="co-total"><span>Total</span><strong>₹{total}</strong></div>
           {error && <p className="auth-error">{error}</p>}
+          {/* The label always names the ONE thing still blocking the booking —
+              a disabled button with no reason is the worst thing at checkout. */}
           <button className="btn-primary co-place" disabled={!valid || busy} onClick={placeBooking}>
-            {busy ? 'Placing…' : !date ? 'Select a date' : !timeSlot ? 'Select a time slot' : address.trim().length <= 5 ? 'Add your address' : 'Pay advance & confirm'}
+            {busy
+              ? 'Placing…'
+              : !date
+                ? 'Select a date'
+                : !timeSlot
+                  ? 'Select a time slot'
+                  : address.trim().length <= 5
+                    ? 'Add your address'
+                    : !pinValid
+                      ? 'Add your pincode'
+                      : unserved
+                        ? `We don't cover ${pin} yet`
+                        : 'Pay advance & confirm'}
           </button>
         </aside>
       </div>

@@ -5,6 +5,7 @@ import {
   LayoutGrid, Wrench, Bug, ChevronDown, Smartphone,
 } from 'lucide-react';
 import { api, type ServiceItem, type PopularService } from '../../api';
+import { Seo } from '../../components/Seo';
 import { useAuth } from '../../auth/AuthContext';
 import { ServiceCard } from '../../components/app/ServiceCard';
 import { ServiceThumb } from '../../components/app/ServiceThumb';
@@ -47,6 +48,21 @@ const CATEGORY_TAGLINE: Record<string, string> = {
   'Pest Control': 'A safer, healthier home',
 };
 
+/**
+ * SEO for the homepage. Defined once and rendered from both the pincode gate and
+ * the discovery view, so the two branches can never drift apart — this is the
+ * page that has to rank, and until now it shipped with no tags at all.
+ */
+function HomeSeo() {
+  return (
+    <Seo
+      title="Book Home Cleaning & Repairs Online"
+      description="Book trusted, background-verified professionals for home cleaning, repairs and pest control. Transparent pricing, convenient slots, and you only pay the balance after the job is done."
+      image="/images/hero.webp"
+    />
+  );
+}
+
 /** Booking discovery — the homepage. */
 export function AppHome() {
   const { profile, pincode, setPincode } = useAuth();
@@ -67,11 +83,12 @@ export function AppHome() {
   const search = (searchParams.get('q') || '').trim();
   const servicesRef = useRef<HTMLDivElement>(null);
 
-  const fetchServices = useCallback(async (pin: string, q: string) => {
+  /** Fetch the catalogue — area-filtered when we know the area, full otherwise. */
+  const fetchServices = useCallback(async (pin: string | null, q: string) => {
     setLoading(true);
     setError(false);
     try {
-      setServices(await api.listAvailableServices(pin, q));
+      setServices(await api.listAvailableServices(pin || undefined, q));
     } catch {
       setError(true);
     } finally {
@@ -84,9 +101,12 @@ export function AppHome() {
   }, []);
 
   useEffect(() => {
-    if (!pincode) { setLoading(false); return; }
+    // No pincode is a valid state now: show the whole catalogue rather than a
+    // wall. Google and first-time visitors both land here.
     fetchServices(pincode, search);
-    if (!search) fetchPopular(pincode);
+    // "Most popular" is genuinely area-specific, so it stays hidden until we
+    // know where the visitor is — an empty section beats a misleading one.
+    if (pincode && !search) fetchPopular(pincode);
   }, [pincode, search, fetchServices, fetchPopular]);
 
   const savePincode = async (e: React.FormEvent) => {
@@ -113,21 +133,37 @@ export function AppHome() {
     return Array.from(map.entries());
   }, [services]);
 
-  /* ── Pincode gate ── */
-  if (!pincode || changing) {
+  /**
+   * Area picker — an OPT-IN panel, not a gate.
+   *
+   * This used to be an early return on `!pincode`, which meant nobody (and no
+   * crawler, which never has a stored pincode) could see a single service until
+   * they typed one. Google therefore indexed a homepage of ~15 words with zero
+   * services or prices on it. Now it only appears when the visitor explicitly
+   * asks to set/change their area; availability is confirmed at checkout, which
+   * is where we actually need it in order to send someone.
+   */
+  if (changing) {
     return (
       <div className="pin-gate">
+        <HomeSeo />
         <div className="pin-icon"><MapPin size={26} /></div>
         <h1 className="pin-title">Where do you need service?</h1>
-        <p className="pin-sub">Enter your area pincode to see what's available.</p>
+        <p className="pin-sub">Enter your pincode and we'll show what's available in your area.</p>
         <form className="pin-form" onSubmit={savePincode}>
-          <input className="auth-input" inputMode="numeric" placeholder="6-digit pincode" maxLength={6}
+          {/* Visually redundant next to the heading, but screen readers otherwise
+              announce this as an unlabelled text field. */}
+          <label className="sr-only" htmlFor="pin-input">Area pincode</label>
+          <input id="pin-input" className="auth-input" inputMode="numeric" autoComplete="postal-code"
+            placeholder="6-digit pincode" maxLength={6}
             value={pinInput} onChange={(e) => setPinInput(e.target.value.replace(/\D/g, '').slice(0, 6))} autoFocus />
           {pinError && <p className="auth-error">{pinError}</p>}
           <button className="btn-primary auth-submit" type="submit" disabled={savingPin || pinInput.length < 6}>
-            {savingPin ? 'Loading…' : 'Find services'}
+            {savingPin ? 'Loading…' : 'Show my area'}
           </button>
-          {changing && <button type="button" className="auth-link" onClick={() => setChanging(false)}>Cancel</button>}
+          <button type="button" className="auth-link" onClick={() => setChanging(false)}>
+            {pincode ? 'Cancel' : 'Browse all services instead'}
+          </button>
         </form>
       </div>
     );
@@ -141,10 +177,24 @@ export function AppHome() {
 
   return (
     <>
+      <HomeSeo />
       <div className="disc-head">
         <div className="disc-loc">
-          <MapPin size={14} /> Serving {pincode}
-          <button className="disc-change" onClick={() => { setPinInput(pincode); setChanging(true); }}>Change</button>
+          <MapPin size={14} />
+          {pincode ? (
+            <>
+              Serving {pincode}
+              <button className="disc-change" onClick={() => { setPinInput(pincode); setChanging(true); }}>Change</button>
+            </>
+          ) : (
+            <>
+              {/* Invitation, not a demand — browsing works without answering it. */}
+              Showing all services
+              <button className="disc-change" onClick={() => { setPinInput(''); setChanging(true); }}>
+                Check your area
+              </button>
+            </>
+          )}
         </div>
         <h1 className="disc-greeting">{name ? `${greetingPrefix()}, ${name} 👋` : 'What can we help you with?'}</h1>
       </div>
@@ -163,7 +213,7 @@ export function AppHome() {
               <span><IndianRupee size={15} /> Transparent pricing</span>
             </div>
           </div>
-          <div className="home-hero-img"><img src="/images/hero.png" alt="Professional home cleaning" loading="lazy" /></div>
+          <div className="home-hero-img"><img src="/images/hero.webp" alt="Professional home cleaning" loading="lazy" /></div>
         </section>
       )}
 
@@ -193,8 +243,20 @@ export function AppHome() {
         </div>
       ) : services.length === 0 ? (
         <div className="app-placeholder">
-          <h1>{isSearching ? 'No matching services' : 'No services here yet'}</h1>
-          <p>{isSearching ? 'Try a different search term.' : 'We don’t serve this area yet — try changing your pincode.'}</p>
+          <h1>{isSearching ? 'No matching services' : pincode ? 'Not in your area yet' : 'No services listed yet'}</h1>
+          <p>
+            {isSearching
+              ? 'Try a different search term.'
+              : pincode
+                ? `We don’t serve ${pincode} yet. Browse everything we offer, or check a different pincode.`
+                : 'Please check back shortly.'}
+          </p>
+          {/* An unserved pincode must never be a dead end — always offer the way back. */}
+          {!isSearching && pincode && (
+            <button className="btn-secondary" style={{ marginTop: 12 }} onClick={() => setPincode('')}>
+              Browse all services
+            </button>
+          )}
         </div>
       ) : !showRich ? (
         <section className="disc-section">

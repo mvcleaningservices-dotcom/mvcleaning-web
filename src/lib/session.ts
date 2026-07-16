@@ -17,8 +17,14 @@ export const session = {
   getPincode(): string | null {
     return localStorage.getItem(PINCODE_KEY);
   },
+  /**
+   * Store the visitor's area. Passing an empty string CLEARS it — "no area" is a
+   * legitimate state now (browse everything), so it must be a real absence
+   * rather than an empty string sitting in storage pretending to be a pincode.
+   */
   setPincode(pincode: string): void {
-    localStorage.setItem(PINCODE_KEY, pincode);
+    if (pincode) localStorage.setItem(PINCODE_KEY, pincode);
+    else localStorage.removeItem(PINCODE_KEY);
   },
   clear(): void {
     localStorage.removeItem(TOKEN_KEY);

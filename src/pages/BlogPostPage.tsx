@@ -7,43 +7,7 @@ import { api } from '../api';
 
 interface Post { id: string; title: string; content: string; publishedAt: string; }
 
-const FALLBACK_POST_CONTENT: Record<string, Post> = {
-  'top-5-kitchen-cleaning-hacks': {
-    id: 'f1', title: 'Top 5 Kitchen Cleaning Hacks for Indian Homes',
-    publishedAt: new Date(Date.now() - 7 * 86400000).toISOString(),
-    content: `The kitchen is the heart of an Indian home, but the heavy use of oil and spices means it gets dirty fast. Here are 5 hacks to keep it spotless:
 
-1. Baking Soda & Vinegar for Chimneys
-Chimney filters collect stubborn grease. Soak them in boiling water with baking soda and a dash of vinegar for 30 minutes. The grease will melt right off!
-
-2. Lemon for Microwave Odors
-Slice a lemon, put it in a bowl of water, and microwave it on high for 3 minutes. The steam loosens dried food, and the lemon neutralizes curry odors.
-
-3. Oil to Remove Oil
-It sounds counterintuitive, but rubbing a few drops of vegetable oil on a paper towel and wiping greasy cabinets will dissolve sticky buildup. Follow up with a mild soap wipe.
-
-4. Newspaper for Glass
-Instead of cloth, use old newspaper with a glass cleaner for your kitchen windows and oven doors. It leaves zero lint and a streak-free shine.
-
-5. Hire Professionals for Deep Cleaning
-Sometimes, home hacks aren't enough. A professional deep clean every 3-6 months reaches places you can't and sanitizes your entire cooking space.`
-  },
-  'why-deep-cleaning-matters': {
-    id: 'f2', title: 'Why Deep Cleaning Before Festivals is Essential',
-    publishedAt: new Date(Date.now() - 14 * 86400000).toISOString(),
-    content: `Diwali and other festivals bring joy, light, and a lot of guests. While regular cleaning keeps things tidy, a professional deep clean is necessary preparation.
-
-Here's why you should book a deep clean before the festive season:
-
-Hidden Dust: Dust accumulates on fan blades, top shelves, and behind heavy furniture. Deep cleaning ensures every hidden corner is addressed.
-
-Sanitization: A deep clean goes beyond dusting. It involves sanitizing bathrooms, kitchens, and high-touch areas, ensuring a hygienic environment for your family and guests.
-
-Saves Time: Preparing for festivals is exhausting. Outsourcing the cleaning to professionals gives you time to focus on shopping, cooking, and decorating.
-
-Protect Your Investment: Regular deep cleaning extends the life of your furniture, carpets, and appliances by removing abrasive dirt and grime.`
-  }
-};
 
 export function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -55,11 +19,7 @@ export function BlogPostPage() {
     if (!slug) return;
     api.getBlogPost(slug)
       .then(setPost)
-      .catch(() => {
-        const fallback = FALLBACK_POST_CONTENT[slug];
-        if (fallback) setPost(fallback);
-        else setError('Article not found.');
-      })
+      .catch(() => setError('Article not found.'))
       .finally(() => setLoading(false));
   }, [slug]);
 

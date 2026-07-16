@@ -150,8 +150,19 @@ export const api = {
   me: () => request<{ role: string; user: AuthUser }>('/auth/me', {}, true),
 
   /* Discovery */
-  listAvailableServices: (pincode: string, search = '') =>
-    request<ServiceItem[]>(`/services?pincode=${encodeURIComponent(pincode)}${search ? `&search=${encodeURIComponent(search)}` : ''}`),
+  /**
+   * Discovery listing. `pincode` is optional — without one the API returns the
+   * whole catalogue, which is what a visitor (and Google) sees before they've
+   * told us their area. Search is handled server-side either way, so it keeps
+   * working as the catalogue grows.
+   */
+  listAvailableServices: (pincode?: string, search = '') => {
+    const q = new URLSearchParams();
+    if (pincode) q.set('pincode', pincode);
+    if (search) q.set('search', search);
+    const qs = q.toString();
+    return request<ServiceItem[]>(`/services${qs ? `?${qs}` : ''}`);
+  },
   listPopular: (pincode: string) =>
     request<PopularService[]>(`/services/popular?pincode=${encodeURIComponent(pincode)}`),
 

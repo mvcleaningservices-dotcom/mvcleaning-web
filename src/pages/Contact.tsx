@@ -25,7 +25,7 @@ export function Contact() {
 
   return (
     <>
-      <Seo title="Contact Us" description="Get in touch with MV Cleaning Services. We're here to help with bookings, queries, and feedback." image="/images/hero.png" />
+      <Seo title="Contact Us" description="Get in touch with MV Cleaning Services. We're here to help with bookings, queries, and feedback." image="/images/hero.webp" />
 
       <section className="page-hero">
         <div className="container">

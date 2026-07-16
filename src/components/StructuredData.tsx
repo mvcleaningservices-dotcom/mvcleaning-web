@@ -31,7 +31,7 @@ export const LOCAL_BUSINESS_SCHEMA = {
     addressCountry: 'IN',
   },
   priceRange: '₹149 - ₹999',
-  image: '/images/hero.png',
+  image: '/images/hero.webp',
   aggregateRating: {
     '@type': 'AggregateRating',
     ratingValue: '4.9',

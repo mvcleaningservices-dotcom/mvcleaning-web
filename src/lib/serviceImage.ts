@@ -6,15 +6,15 @@
  * Mirrors the mobile app's name-matched imagery, using the web public assets.
  */
 const KEYWORD_IMAGES: [string, string][] = [
-  ['kitchen', '/images/service-kitchen.png'],
-  ['bathroom', '/images/service-bathroom.png'],
-  ['deep', '/images/service-deepclean.png'],
-  ['sofa', '/images/service-sofa.png'],
-  ['carpet', '/images/service-carpet.png'],
-  ['window', '/images/service-window.png'],
-  ['pest', '/images/service-pest.png'],
-  ['salon', '/images/service-salon.png'],
-  ['plumb', '/images/service-plumbing.png'],
+  ['kitchen', '/images/service-kitchen.webp'],
+  ['bathroom', '/images/service-bathroom.webp'],
+  ['deep', '/images/service-deepclean.webp'],
+  ['sofa', '/images/service-sofa.webp'],
+  ['carpet', '/images/service-carpet.webp'],
+  ['window', '/images/service-window.webp'],
+  ['pest', '/images/service-pest.webp'],
+  ['salon', '/images/service-salon.webp'],
+  ['plumb', '/images/service-plumbing.webp'],
 ];
 
 export function serviceImage(service: { name: string; imageUrl?: string }): string {

@@ -1,5 +1,12 @@
 User-agent: *
 Allow: /
+
+# Login-gated app pages — nothing for a crawler to render, and no index value.
+Disallow: /checkout
+Disallow: /bookings
+Disallow: /wallet
+Disallow: /account
+Disallow: /login
 Disallow: /api/
 
-Sitemap: https://mvcleaning.in/sitemap.xml
+Sitemap: https://www.mvcleaningservices.in/sitemap.xml

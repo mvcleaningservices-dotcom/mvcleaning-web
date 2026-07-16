@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Droplets, Bath, Utensils, Sofa, Wind, Scissors, Bug, Home, Sparkles, ArrowRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Seo } from '../components/Seo';
@@ -19,51 +19,51 @@ const getCategoryIcon = (name: string): React.ElementType => {
   return Home;
 };
 
-/** Hardcoded fallback when the API is unavailable */
-const FALLBACK_SERVICES = [
-  { id: '1', name: 'Deep Cleaning',    description: 'Top-to-bottom clean for your entire home. Every corner, every surface.', price: 999 },
-  { id: '2', name: 'Bathroom Cleaning',description: 'Complete sanitation — tiles, fixtures, mirrors, and drains.', price: 299 },
-  { id: '3', name: 'Kitchen Cleaning', description: 'Degreasing, chimney cleaning, slab polishing, and sink sanitization.', price: 399 },
-  { id: '4', name: 'Sofa & Upholstery',description: 'Professional shampoo and vacuum cleaning for sofas and chairs.', price: 149 },
-  { id: '5', name: 'Pest Control',     description: 'Effective, safe treatment for cockroaches, ants, and bed bugs.', price: 599 },
-  { id: '6', name: 'Salon at Home',    description: 'Professional haircut, facial, and beauty services at your doorstep.', price: 499 },
-];
-
 interface Service { id: string; name: string; description: string; price: number; }
-
-/** Service structured data for Google rich results */
-const SERVICE_SCHEMA = {
-  '@context': 'https://schema.org',
-  '@type': 'ItemList',
-  itemListElement: FALLBACK_SERVICES.map((s, i) => ({
-    '@type': 'ListItem',
-    position: i + 1,
-    item: {
-      '@type': 'Service',
-      name: s.name,
-      description: s.description,
-      offers: {
-        '@type': 'Offer',
-        price: s.price,
-        priceCurrency: 'INR',
-      },
-    },
-  })),
-};
 
 export function Services() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     api.listServices()
-      .then(setServices)
-      .catch(() => setServices(FALLBACK_SERVICES))
+      .then((live) => setServices(live))
+      .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, []);
 
-  const displayServices = services.length > 0 ? services : FALLBACK_SERVICES;
+  /**
+   * Structured data for Google rich results — built from the LIVE catalog only.
+   * It must never be generated from placeholder data: whatever is emitted here
+   * is what Google publishes as our prices, so a stale constant would advertise
+   * prices we don't charge. No services loaded → emit no schema.
+   */
+  const serviceSchema = useMemo(
+    () =>
+      services.length > 0
+        ? {
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            itemListElement: services.map((s, i) => ({
+              '@type': 'ListItem',
+              position: i + 1,
+              item: {
+                '@type': 'Service',
+                name: s.name,
+                description: s.description,
+                offers: {
+                  '@type': 'Offer',
+                  price: s.price,
+                  priceCurrency: 'INR',
+                },
+              },
+            })),
+          }
+        : null,
+    [services],
+  );
 
   return (
     <>
@@ -71,7 +71,7 @@ export function Services() {
         title="Our Services — Professional Home Cleaning"
         description="Explore all MV Cleaning Services: deep cleaning, bathroom, kitchen, sofa, pest control, and salon at home. Transparent pricing. Book instantly."
       />
-      <StructuredData data={SERVICE_SCHEMA} />
+      {serviceSchema && <StructuredData data={serviceSchema} />}
 
       <section className="page-hero" aria-label="Services hero">
         <div className="container">
@@ -94,22 +94,39 @@ export function Services() {
                 <div key={i} className="skeleton" style={{ height: 280, borderRadius: 'var(--radius-xl)' }} />
               ))}
             </div>
+          ) : error ? (
+            <div className="card" style={{ padding: 'var(--space-12)', textAlign: 'center' }}>
+              <h3 className="text-h3 text-primary" style={{ marginBottom: 'var(--space-2)' }}>
+                Couldn't load our services
+              </h3>
+              <p className="text-secondary" style={{ marginBottom: 'var(--space-6)' }}>
+                Something went wrong on our side. Please try again in a moment.
+              </p>
+              <button className="btn-secondary" onClick={() => window.location.reload()}>Retry</button>
+            </div>
+          ) : services.length === 0 ? (
+            <div className="card" style={{ padding: 'var(--space-12)', textAlign: 'center' }}>
+              <h3 className="text-h3 text-primary" style={{ marginBottom: 'var(--space-2)' }}>
+                No services listed yet
+              </h3>
+              <p className="text-secondary">Please check back shortly.</p>
+            </div>
           ) : (
             <div className="grid-auto">
-              {displayServices.map((s, i) => {
+              {services.map((s, i) => {
                 const Icon = getCategoryIcon(s.name);
                 // Explicitly check for matching substrings to ensure images load
                 const lowerName = s.name.toLowerCase();
                 let image = '';
-                if (lowerName.includes('deep')) image = '/images/service-deepclean.png';
-                else if (lowerName.includes('bathroom')) image = '/images/service-bathroom.png';
-                else if (lowerName.includes('kitchen')) image = '/images/service-kitchen.png';
-                else if (lowerName.includes('sofa')) image = '/images/service-sofa.png';
-                else if (lowerName.includes('carpet')) image = '/images/service-carpet.png';
-                else if (lowerName.includes('window')) image = '/images/service-window.png';
-                else if (lowerName.includes('pest')) image = '/images/service-pest.png';
-                else if (lowerName.includes('salon')) image = '/images/service-salon.png';
-                else if (lowerName.includes('plumb')) image = '/images/service-plumbing.png';
+                if (lowerName.includes('deep')) image = '/images/service-deepclean.webp';
+                else if (lowerName.includes('bathroom')) image = '/images/service-bathroom.webp';
+                else if (lowerName.includes('kitchen')) image = '/images/service-kitchen.webp';
+                else if (lowerName.includes('sofa')) image = '/images/service-sofa.webp';
+                else if (lowerName.includes('carpet')) image = '/images/service-carpet.webp';
+                else if (lowerName.includes('window')) image = '/images/service-window.webp';
+                else if (lowerName.includes('pest')) image = '/images/service-pest.webp';
+                else if (lowerName.includes('salon')) image = '/images/service-salon.webp';
+                else if (lowerName.includes('plumb')) image = '/images/service-plumbing.webp';
 
                 return (
                   <Reveal key={s.id} delay={i * 80}>
@@ -138,32 +155,38 @@ export function Services() {
             </div>
           )}
 
-          {/* Pricing table */}
-          <Reveal>
-            <div style={{ marginTop: 64 }}>
-              <h2 className="section-title" style={{ textAlign: 'center', marginBottom: 8 }}>Transparent Pricing</h2>
-              <p className="section-sub" style={{ textAlign: 'center', marginBottom: 32 }}>No hidden charges. What you see is what you pay.</p>
-              <div style={{ overflowX: 'auto' }}>
-                <table className="pricing-table">
-                  <thead>
-                    <tr>
-                      <th>Service</th>
-                      <th>What's Included</th>
-                      <th>Starting Price</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td><strong>Deep Cleaning</strong></td><td>Full home — floors, walls, fans, windows, dusting</td><td className="price-cell">₹999</td></tr>
-                    <tr><td><strong>Bathroom Cleaning</strong></td><td>Tiles, fixtures, mirrors, drains, sanitization</td><td className="price-cell">₹299</td></tr>
-                    <tr><td><strong>Kitchen Cleaning</strong></td><td>Chimney, slabs, sink, stove, degreasing</td><td className="price-cell">₹399</td></tr>
-                    <tr><td><strong>Sofa & Upholstery</strong></td><td>Shampoo + vacuum, per seat pricing</td><td className="price-cell">₹149/seat</td></tr>
-                    <tr><td><strong>Pest Control</strong></td><td>Cockroaches, ants, bed bugs — safe treatment</td><td className="price-cell">₹599</td></tr>
-                    <tr><td><strong>Salon at Home</strong></td><td>Haircut, facial, beauty services</td><td className="price-cell">₹499</td></tr>
-                  </tbody>
-                </table>
+          {/* Pricing table — rendered from the LIVE catalog. A "Transparent
+              Pricing" table must never be hardcoded: it sits directly below the
+              service cards, so any drift shows two different prices for the same
+              service on one screen. */}
+          {!loading && !error && services.length > 0 && (
+            <Reveal>
+              <div style={{ marginTop: 64 }}>
+                <h2 className="section-title" style={{ textAlign: 'center', marginBottom: 8 }}>Transparent Pricing</h2>
+                <p className="section-sub" style={{ textAlign: 'center', marginBottom: 32 }}>No hidden charges. What you see is what you pay.</p>
+                <div style={{ overflowX: 'auto' }}>
+                  <table className="pricing-table">
+                    <thead>
+                      <tr>
+                        <th>Service</th>
+                        <th>What's Included</th>
+                        <th>Starting Price</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {services.map((s) => (
+                        <tr key={s.id}>
+                          <td><strong>{s.name}</strong></td>
+                          <td>{s.description}</td>
+                          <td className="price-cell">₹{s.price}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
-          </Reveal>
+            </Reveal>
+          )}
 
           <Reveal>
             <div style={{ textAlign: 'center', marginTop: 48, padding: '40px', background: 'var(--color-primary-50)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--color-primary-100)' }}>

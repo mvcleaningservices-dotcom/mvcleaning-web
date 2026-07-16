@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://mvcleaning.in/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
-  <url><loc>https://mvcleaning.in/services</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
-  <url><loc>https://mvcleaning.in/about</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://mvcleaning.in/blog</loc><priority>0.8</priority><changefreq>daily</changefreq></url>
-  <url><loc>https://mvcleaning.in/contact</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://mvcleaning.in/faq</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://mvcleaning.in/partner</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://mvcleaning.in/privacy</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
-  <url><loc>https://mvcleaning.in/terms</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://www.mvcleaningservices.in/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://www.mvcleaningservices.in/services</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://www.mvcleaningservices.in/about</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://www.mvcleaningservices.in/blog</loc><priority>0.8</priority><changefreq>daily</changefreq></url>
+  <url><loc>https://www.mvcleaningservices.in/contact</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://www.mvcleaningservices.in/faq</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://www.mvcleaningservices.in/partner</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://www.mvcleaningservices.in/privacy</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://www.mvcleaningservices.in/terms</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://www.mvcleaningservices.in/refunds</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
 </urlset>

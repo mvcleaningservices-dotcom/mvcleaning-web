@@ -13,17 +13,27 @@ const VALUES = [
   { icon: Heart,       title: 'Customer Love',     desc: 'Hundreds of happy homes — your trust is our biggest achievement.' },
 ];
 
+/**
+ * Public-facing business stats.
+ *
+ * ⚠️ UNVERIFIED CLAIMS — these are the client's figures and must be confirmed by
+ * them before launch. Do not add a stat here that the product cannot substantiate.
+ *
+ * An "Average Rating" stat was removed deliberately: there is no ratings/reviews
+ * system anywhere in the platform, so any star figure would be invented — and
+ * unlike a placeholder phone number, it can never be filled in with real data.
+ * If ratings are wanted here, the reviews backend has to exist first.
+ */
 const STATS = [
   { value: 500, suffix: '+', label: 'Happy Homes' },
   { value: 50, suffix: '+', label: 'Professionals' },
   { value: 3, suffix: '', label: 'Cities' },
-  { value: 4, suffix: '.9★', label: 'Average Rating' },
 ];
 
 export function About() {
   return (
     <>
-      <Seo title="About Us — MV Cleaning Services" description="Learn about MV Cleaning Services — our mission, values, and commitment to professional, trustworthy home cleaning." image="/images/about-team.png" />
+      <Seo title="About Us — MV Cleaning Services" description="Learn about MV Cleaning Services — our mission, values, and commitment to professional, trustworthy home cleaning." image="/images/about-team.webp" />
 
       <section className="page-hero" style={{ background: 'linear-gradient(135deg, var(--color-slate-900) 0%, var(--color-slate-800) 100%)', color: '#fff', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '-50%', left: '-20%', width: '100%', height: '200%', background: 'radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 60%)', zIndex: 0 }} />
@@ -65,7 +75,7 @@ export function About() {
             </Reveal>
             <Reveal delay={150}>
               <div className="about-img" style={{ boxShadow: 'var(--shadow-xl)' }}>
-                <img src="/images/about-team.png" alt="MV Cleaning Services professional team" loading="lazy" />
+                <img src="/images/about-team.webp" alt="MV Cleaning Services professional team" loading="lazy" />
               </div>
             </Reveal>
           </div>

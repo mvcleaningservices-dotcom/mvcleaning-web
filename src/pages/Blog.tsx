@@ -7,35 +7,15 @@ import { api } from '../api';
 
 interface Post { id: string; slug: string; title: string; excerpt: string; publishedAt: string; }
 
-const FALLBACK_POSTS: Post[] = [
-  {
-    id: 'f1', slug: 'top-5-kitchen-cleaning-hacks',
-    title: 'Top 5 Kitchen Cleaning Hacks for Indian Homes',
-    excerpt: 'Turmeric stains and oil grease can be stubborn. Here are 5 easy hacks to keep your kitchen spotless.',
-    publishedAt: new Date(Date.now() - 7 * 86400000).toISOString()
-  },
-  {
-    id: 'f2', slug: 'why-deep-cleaning-matters',
-    title: 'Why Deep Cleaning Before Festivals is Essential',
-    excerpt: 'Festivals bring joy, but also guests. Discover why a professional deep clean is the best preparation.',
-    publishedAt: new Date(Date.now() - 14 * 86400000).toISOString()
-  },
-  {
-    id: 'f3', slug: 'maintaining-fabric-sofas',
-    title: 'The Ultimate Guide to Maintaining Fabric Sofas',
-    excerpt: 'Fabric sofas are beautiful but attract dust and stains. Learn how to maintain them and when to call the pros.',
-    publishedAt: new Date(Date.now() - 21 * 86400000).toISOString()
-  }
-];
-
 export function Blog() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     api.listBlogPosts()
-      .then(fetched => setPosts(fetched.length > 0 ? fetched : FALLBACK_POSTS))
-      .catch(() => setPosts(FALLBACK_POSTS))
+      .then((fetched) => setPosts(fetched))
+      .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, []);
 
@@ -66,6 +46,25 @@ export function Blog() {
                   </div>
                 </div>
               ))}
+            </div>
+          ) : error ? (
+            <div className="card" style={{ padding: 'var(--space-12)', textAlign: 'center' }}>
+              <BookOpen size={40} style={{ color: 'var(--color-primary-300)', margin: '0 auto var(--space-4)' }} />
+              <h3 className="text-h3 text-primary" style={{ marginBottom: 'var(--space-2)' }}>
+                Couldn't load articles
+              </h3>
+              <p className="text-secondary" style={{ marginBottom: 'var(--space-6)' }}>
+                Something went wrong on our side. Please try again in a moment.
+              </p>
+              <button className="btn-secondary" onClick={() => window.location.reload()}>Retry</button>
+            </div>
+          ) : posts.length === 0 ? (
+            <div className="card" style={{ padding: 'var(--space-12)', textAlign: 'center' }}>
+              <BookOpen size={40} style={{ color: 'var(--color-primary-300)', margin: '0 auto var(--space-4)' }} />
+              <h3 className="text-h3 text-primary" style={{ marginBottom: 'var(--space-2)' }}>
+                No articles yet
+              </h3>
+              <p className="text-secondary">We're writing our first posts — check back soon.</p>
             </div>
           ) : (
             <div className="blog-grid reveal-stagger">

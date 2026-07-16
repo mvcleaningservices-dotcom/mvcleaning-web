@@ -12,12 +12,12 @@ import { AnimatedCounter } from '../components/AnimatedCounter';
 import { AppDownloadModal } from '../components/AppDownloadModal';
 
 const SERVICES = [
-  { icon: Droplets,  title: 'Deep Cleaning',       desc: 'Top-to-bottom clean for your entire home.', price: '₹999', image: '/images/service-deepclean.png' },
-  { icon: Bath,      title: 'Bathroom Cleaning',    desc: 'Complete sanitation for a spotless bathroom.', price: '₹299', image: '/images/service-bathroom.png' },
-  { icon: Utensils,  title: 'Kitchen Cleaning',     desc: 'Degreasing and sanitizing for a shining kitchen.', price: '₹399', image: '/images/service-kitchen.png' },
-  { icon: Sofa,      title: 'Sofa & Upholstery',    desc: 'Shampoo and vacuum cleaning, per seat.', price: '₹149/seat', image: '/images/service-sofa.png' },
-  { icon: Wind,      title: 'Pest Control',         desc: 'Effective treatment for all common pests.', price: '₹599', image: '/images/service-pest.png' },
-  { icon: Scissors,  title: 'Salon at Home',        desc: 'Professional beauty services at your doorstep.', price: '₹499', image: '/images/service-salon.png' },
+  { icon: Droplets,  title: 'Deep Cleaning',       desc: 'Top-to-bottom clean for your entire home.', price: '₹999', image: '/images/service-deepclean.webp' },
+  { icon: Bath,      title: 'Bathroom Cleaning',    desc: 'Complete sanitation for a spotless bathroom.', price: '₹299', image: '/images/service-bathroom.webp' },
+  { icon: Utensils,  title: 'Kitchen Cleaning',     desc: 'Degreasing and sanitizing for a shining kitchen.', price: '₹399', image: '/images/service-kitchen.webp' },
+  { icon: Sofa,      title: 'Sofa & Upholstery',    desc: 'Shampoo and vacuum cleaning, per seat.', price: '₹149/seat', image: '/images/service-sofa.webp' },
+  { icon: Wind,      title: 'Pest Control',         desc: 'Effective treatment for all common pests.', price: '₹599', image: '/images/service-pest.webp' },
+  { icon: Scissors,  title: 'Salon at Home',        desc: 'Professional beauty services at your doorstep.', price: '₹499', image: '/images/service-salon.webp' },
 ];
 
 const HOW_IT_WORKS = [
@@ -47,7 +47,7 @@ export function Home() {
       <Seo
         title="Professional Home Cleaning Services — Book in Minutes"
         description="Book trusted, professional home cleaning services in a few taps with MV Cleaning Services. Deep cleaning, bathroom, kitchen, sofa, pest control and more."
-        image="/images/hero.png"
+        image="/images/hero.webp"
       />
 
       {/* ── Hero ── */}
@@ -93,7 +93,7 @@ export function Home() {
           </div>
           <div className="hero-image" aria-hidden="true">
             <div className="hero-img-wrap">
-              <img src="/images/hero.png" alt="Professional home cleaner at work in a modern living room" loading="eager" />
+              <img src="/images/hero.webp" alt="Professional home cleaner at work in a modern living room" loading="eager" />
             </div>
           </div>
         </div>

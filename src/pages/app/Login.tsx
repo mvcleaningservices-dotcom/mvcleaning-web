@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { ShieldCheck, Sparkles } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 import { api } from '../../api';
 import { useAuth } from '../../auth/AuthContext';
 
@@ -71,7 +71,7 @@ export function Login() {
       <header className="app-header">
         <div className="app-header-inner">
           <Link to="/" className="app-logo" style={{ display: 'block', height: 34 }}>
-            <img src="/images/logo_light.png" alt="MV Cleaning Services" style={{ height: 34, borderRadius: 4 }} />
+            <img src="/images/logo_light.webp" alt="MV Cleaning Services" style={{ height: 34, borderRadius: 4 }} />
           </Link>
         </div>
       </header>

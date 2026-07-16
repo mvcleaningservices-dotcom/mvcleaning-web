@@ -51,19 +51,29 @@ export function Account() {
 
       <form className="panel acct-form" onSubmit={save}>
         <h2>Personal details</h2>
-        <label className="auth-label">Mobile number</label>
-        <input className="auth-input" value={profile?.mobile || ''} disabled />
-        <label className="auth-label">Full name</label>
-        <input className="auth-input" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" />
-        <label className="auth-label">Default address</label>
-        <textarea className="co-textarea" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Flat, street, landmark" />
-        <label className="auth-label">Pincode</label>
-        <input className="auth-input" value={pincode} onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 6))} maxLength={6} />
+        <label className="auth-label" htmlFor="acct-mobile">Mobile number</label>
+        <input id="acct-mobile" className="auth-input" value={profile?.mobile || ''} disabled />
+        <label className="auth-label" htmlFor="acct-name">Full name</label>
+        <input id="acct-name" className="auth-input" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" />
+        <label className="auth-label" htmlFor="acct-address">Default address</label>
+        <textarea id="acct-address" className="co-textarea" autoComplete="street-address" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Flat, street, landmark" />
+        <label className="auth-label" htmlFor="acct-pincode">Pincode</label>
+        <input id="acct-pincode" className="auth-input" inputMode="numeric" autoComplete="postal-code" value={pincode} onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 6))} maxLength={6} />
         {msg && <p className="acct-msg">{msg}</p>}
         <button className="btn-primary" type="submit" disabled={saving} style={{ marginTop: 16 }}>{saving ? 'Saving…' : 'Save changes'}</button>
       </form>
 
-      <button className="acct-logout" onClick={() => { logout(); navigate('/'); }}>
+      {/* Confirmed: logging back in needs a fresh SMS OTP, so an accidental tap
+          costs the user a real round-trip — not just a click. */}
+      <button
+        className="acct-logout"
+        onClick={() => {
+          if (window.confirm('Log out of MV Cleaning?')) {
+            logout();
+            navigate('/');
+          }
+        }}
+      >
         <LogOut size={18} /> Log out
       </button>
     </div>
