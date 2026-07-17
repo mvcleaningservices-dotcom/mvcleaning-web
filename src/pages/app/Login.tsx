@@ -71,7 +71,7 @@ export function Login() {
       <header className="app-header">
         <div className="app-header-inner">
           <Link to="/" className="app-logo" style={{ display: 'block', height: 34 }}>
-            <img src="/images/logo_light.webp" alt="MV Cleaning Services" style={{ height: 34, borderRadius: 4 }} />
+            <img src="/images/logo.webp" alt="MV Cleaning Services" style={{ height: 34 }} />
           </Link>
         </div>
       </header>

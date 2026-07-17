@@ -7,21 +7,34 @@
 
 :root {
   /* ─────────────────────────────────────────────────────────────
-   * 1. COLOR — Primary teal (clean, trustworthy) + warm neutrals
+   * 1. COLOR — Primary brand blue (from the logo) + warm neutrals
    * ─────────────────────────────────────────────────────────────
    */
 
-  /* Primary — rich teal */
-  --color-primary-50:  #f0fdfa;
-  --color-primary-100: #ccfbf1;
-  --color-primary-200: #99f6e4;
-  --color-primary-300: #5eead4;
-  --color-primary-400: #2dd4bf;
-  --color-primary-500: #14b8a6;
-  --color-primary-600: #0d9488;   /* BASE — buttons, links, nav active */
-  --color-primary-700: #0f766e;   /* hover state */
-  --color-primary-800: #115e59;
-  --color-primary-900: #0c4a42;   /* deeper hero gradient */
+  /* Primary — MV brand blue, taken from the logo.
+   *
+   * The scale is anchored so 600 is EXACTLY the logo's blue (#014eb4): 50-500
+   * are tints toward white, 700-900 shades toward black. Previously this was
+   * teal (#0d9488) while the logo was blue — two unrelated colours, which read
+   * as an accident rather than a brand.
+   *
+   * Contrast verified (WCAG AA needs 4.5:1 for body text):
+   *   white on 600 .......... 7.64:1  PASS
+   *   white on 700 .......... 9.47:1  PASS
+   *   600 text on white ..... 7.64:1  PASS
+   *   700 text on 50 ........ 8.74:1  PASS
+   *   white on 800 ......... 11.71:1  PASS
+   */
+  --color-primary-50:  #f2f6fb;
+  --color-primary-100: #e1eaf6;
+  --color-primary-200: #c2d5ed;
+  --color-primary-300: #94b5e0;
+  --color-primary-400: #5287cc;
+  --color-primary-500: #2567be;
+  --color-primary-600: #014eb4;   /* BASE — buttons, links, nav active (the logo blue) */
+  --color-primary-700: #014297;   /* hover state */
+  --color-primary-800: #01357a;
+  --color-primary-900: #01295e;   /* deeper hero gradient */
 
   /* Accent — warm orange/amber for prices & highlights */
   --color-accent-500:  #f97316;
@@ -112,6 +125,7 @@
   --radius-lg:   14px;
   --radius-xl:   20px;
   --radius-2xl:  28px;
+  --radius-3xl:  36px;
   --radius-pill: 9999px;
 
   /* ─────────────────────────────────────────────────────────────

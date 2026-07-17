@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { User, LogOut } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { User, LogOut, ClipboardList, ChevronRight, Wallet as WalletIcon } from 'lucide-react';
 import { api } from '../../api';
 import { useAuth } from '../../auth/AuthContext';
 
@@ -48,6 +48,29 @@ export function Account() {
           <div className="acct-mobile">{profile?.mobile}</div>
         </div>
       </div>
+
+      {/* Bookings and Wallet had no route into them anywhere on the site — the
+          only link to /bookings was the checkout success screen, and /wallet had
+          none at all. Mobile carries both as bottom tabs; this is web's version,
+          and it's the first place someone looks after tapping their profile. */}
+      <nav className="acct-menu" aria-label="Account sections">
+        <Link to="/bookings" className="acct-menu-row">
+          <span className="acct-menu-icon"><ClipboardList size={18} /></span>
+          <span className="acct-menu-body">
+            <strong>My bookings</strong>
+            <small>Track upcoming and past services</small>
+          </span>
+          <ChevronRight size={18} className="acct-menu-chev" />
+        </Link>
+        <Link to="/wallet" className="acct-menu-row">
+          <span className="acct-menu-icon"><WalletIcon size={18} /></span>
+          <span className="acct-menu-body">
+            <strong>Wallet</strong>
+            <small>Balance and transaction history</small>
+          </span>
+          <ChevronRight size={18} className="acct-menu-chev" />
+        </Link>
+      </nav>
 
       <form className="panel acct-form" onSubmit={save}>
         <h2>Personal details</h2>

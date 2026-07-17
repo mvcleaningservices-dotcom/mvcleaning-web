@@ -44,11 +44,11 @@ export function About() {
       </section>
 
       {/* Stats bar */}
-      <div className="hero-trust-bar" style={{ position: 'relative', zIndex: 10, margin: '-40px 16px 0', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-md)' }}>
-        <div className="container">
+      <div className="hero-trust-bar" style={{ margin: '0 auto', boxShadow: 'var(--shadow-md)' }}>
+        <div className="container" style={{ justifyContent: 'center', gap: 'var(--space-8)', flexWrap: 'wrap' }}>
           {STATS.map(s => (
-            <div key={s.label} className="trust-bar-item" style={{ flexDirection: 'column', gap: 2 }}>
-              <span style={{ fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 800, color: 'var(--color-primary-600)' }}>
+            <div key={s.label} className="trust-bar-item" style={{ flexDirection: 'column', gap: 2, textAlign: 'center' }}>
+              <span style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(20px, 4vw, 24px)', fontWeight: 800, color: 'var(--color-primary-600)' }}>
                 <AnimatedCounter end={s.value} suffix={s.suffix} />
               </span>
               <span style={{ fontSize: 12, fontWeight: 500 }}>{s.label}</span>

@@ -166,4 +166,14 @@ ul, ol { list-style: none; }
 @media (max-width: 480px) {
   .section { padding-block: var(--space-8); }
   :root { --container-pad: var(--space-4); }
+  /* Ensure auto-fit grids don't overflow on small phones */
+  .grid-auto { grid-template-columns: 1fr; }
+}
+
+/* 360px — smallest common Android screen width */
+@media (max-width: 360px) {
+  :root { --container-pad: var(--space-3); }
+  .section { padding-block: var(--space-6); }
+  .section-sm { padding-block: var(--space-5); }
+  .grid-auto { grid-template-columns: 1fr; }
 }

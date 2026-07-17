@@ -189,9 +189,9 @@ export function Services() {
           )}
 
           <Reveal>
-            <div style={{ textAlign: 'center', marginTop: 48, padding: '40px', background: 'var(--color-primary-50)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--color-primary-100)' }}>
-              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700, marginBottom: 12 }}>Ready to book?</h3>
-              <p style={{ color: 'var(--color-text-secondary)', marginBottom: 24 }}>Book online in minutes — pick a service, choose a time, and we'll send a verified professional to your door.</p>
+            <div style={{ textAlign: 'center', marginTop: 48, padding: 'clamp(20px, 5vw, 40px)', background: 'var(--color-primary-50)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--color-primary-100)' }}>
+              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(18px, 4vw, 22px)', fontWeight: 700, marginBottom: 12 }}>Ready to book?</h3>
+              <p style={{ color: 'var(--color-text-secondary)', marginBottom: 24, fontSize: 'clamp(14px, 3.5vw, 16px)' }}>Book online in minutes — pick a service, choose a time, and we'll send a verified professional to your door.</p>
               <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
                 <button onClick={() => navigate('/')} className="btn-primary" style={{ border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>
                   <Sparkles size={16} aria-hidden="true" /> Book Now

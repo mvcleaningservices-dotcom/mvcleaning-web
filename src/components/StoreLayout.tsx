@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { MapPin, ShoppingCart, User, Search } from 'lucide-react';
+import { MapPin, ShoppingCart, User, Search, ClipboardList, Wallet as WalletIcon } from 'lucide-react';
 
 const InstaIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>;
 const FbIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>;
@@ -24,6 +24,24 @@ function StoreShell() {
   const year = new Date().getFullYear();
 
   const [q, setQ] = useState('');
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // A dropdown that only closes via its own trigger is a trap: close on outside
+  // click and on Escape, which is what users reflexively try.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMenuOpen(false); };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [menuOpen]);
   const [scrolled, setScrolled] = useState(false);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -58,7 +76,9 @@ function StoreShell() {
         <div className="store-header-inner">
           {/* Logo */}
           <Link to="/" className="app-logo" aria-label="MV Cleaning Home" style={{ display: 'block', height: 34 }}>
-            <img src="/images/logo_light.webp" alt="MV Cleaning Services" style={{ height: 34, borderRadius: 4 }} />
+            {/* Colour mark: the header is white, which is the only surface the
+                full-colour logo can sit on (its artwork IS the brand blue). */}
+            <img src="/images/logo.webp" alt="MV Cleaning Services" style={{ height: 34 }} />
           </Link>
 
           {/* Location pill */}
@@ -91,9 +111,33 @@ function StoreShell() {
               {count > 0 && <span className="store-cart-badge">{count}</span>}
             </Link>
             {isAuthed ? (
-              <Link to="/account" className="store-account" aria-label="My account">
-                <User size={22} />
-              </Link>
+              /* Account menu. The person icon used to link straight to /account,
+                 which left /bookings and /wallet with no route into them at all —
+                 mobile has them as bottom tabs; web had nothing. */
+              <div className="account-menu" ref={menuRef}>
+                <button
+                  className="store-account"
+                  aria-label="My account"
+                  aria-haspopup="menu"
+                  aria-expanded={menuOpen}
+                  onClick={() => setMenuOpen((v) => !v)}
+                >
+                  <User size={22} />
+                </button>
+                {menuOpen && (
+                  <div className="account-dropdown" role="menu">
+                    <Link to="/bookings" role="menuitem" onClick={() => setMenuOpen(false)}>
+                      <ClipboardList size={16} /> My bookings
+                    </Link>
+                    <Link to="/wallet" role="menuitem" onClick={() => setMenuOpen(false)}>
+                      <WalletIcon size={16} /> Wallet
+                    </Link>
+                    <Link to="/account" role="menuitem" onClick={() => setMenuOpen(false)}>
+                      <User size={16} /> Account
+                    </Link>
+                  </div>
+                )}
+              </div>
             ) : (
               <Link to="/login" className="btn-primary store-login">Log in</Link>
             )}
@@ -118,7 +162,10 @@ function StoreShell() {
           {/* Brand column */}
           <div className="store-footer-brand">
             <div className="app-logo" style={{ display: 'inline-flex', marginBottom: 12 }}>
-              <img src="/images/logo.webp" alt="MV Cleaning Services" style={{ height: 34, mixBlendMode: 'screen' }} />
+              {/* White knockout on the dark footer. This previously used the
+                  colour logo with mixBlendMode:'screen' to fake transparency
+                  against slate-900 — a real knockout makes the hack unnecessary. */}
+              <img src="/images/logo_white.webp" alt="MV Cleaning Services" style={{ height: 34 }} />
             </div>
             <p>Professional home cleaning & repair services. Vetted experts, transparent pricing, and a satisfaction guarantee.</p>
             <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
