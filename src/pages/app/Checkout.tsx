@@ -8,12 +8,34 @@ import { serviceImage } from '../../lib/serviceImage';
 
 const TIME_SLOTS = ['08:00-10:00', '10:00-12:00', '12:00-14:00', '14:00-16:00', '16:00-18:00'];
 
+/** Must match MAX_DAYS_AHEAD in the backend's BookingsService. */
+const MAX_DAYS_AHEAD = 60;
+
+/** YYYY-MM-DD from LOCAL date parts. toISOString() would convert to UTC first,
+ *  which in IST turns "today" into yesterday for most of the evening. */
+function localIso(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function dateOffsetIso(days: number) {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return localIso(d);
+}
+
 function nextSevenDays() {
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() + i);
-    const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    return { iso, weekday: i === 0 ? 'Today' : d.toLocaleDateString('en-IN', { weekday: 'short' }), dayNum: d.getDate() };
+    return { iso: localIso(d), weekday: i === 0 ? 'Today' : d.toLocaleDateString('en-IN', { weekday: 'short' }), dayNum: d.getDate() };
+  });
+}
+
+/** e.g. "Mon, 24 Aug" — for confirming a date picked outside the quick chips. */
+function longLabel(iso: string) {
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString('en-IN', {
+    weekday: 'short', day: 'numeric', month: 'short',
   });
 }
 
@@ -63,6 +85,11 @@ export function Checkout() {
   if (items.length === 0 && !placedOrder) return <Navigate to="/" replace />;
 
   const days = nextSevenDays();
+  const minDate = dateOffsetIso(0);
+  const maxDate = dateOffsetIso(MAX_DAYS_AHEAD);
+  // A date chosen from the calendar rather than the quick chips: no chip will be
+  // lit, so it needs its own confirmation line or the choice looks like it was lost.
+  const customDate = date && !days.some((d) => d.iso === date) ? date : '';
   const pinValid = /^\d{6}$/.test(pin);
   const valid = date.length > 5 && !!timeSlot && address.trim().length > 5 && pinValid && !unserved;
 
@@ -124,6 +151,19 @@ export function Checkout() {
                 </button>
               ))}
             </div>
+            <div className="co-datepick">
+              <label htmlFor="co-date">Or choose another date</label>
+              <input
+                id="co-date"
+                type="date"
+                value={date}
+                min={minDate}
+                max={maxDate}
+                onChange={(e) => setDate(e.target.value)}
+              />
+              {customDate && <span className="co-datepick-sel"><Check size={14} /> {longLabel(customDate)}</span>}
+            </div>
+
             <div className="co-card-head" style={{ marginTop: 20 }}><Clock size={16} /><h2>Pick a time slot</h2></div>
             <div className="co-chips">
               {TIME_SLOTS.map((s) => (
