@@ -5,7 +5,10 @@ import { Reveal } from '../components/ScrollReveal';
 import { api } from '../api';
 
 export function Partner() {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '', hp: '' });
+  // `website` is the honeypot — it MUST match the backend DTO's whitelisted
+  // field name, or the strict API rejects the whole submission ("property hp
+  // should not exist"). A hidden field real users never fill; bots do.
+  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '', website: '' });
   const [status, setStatus] = useState<'idle' | 'busy' | 'done' | 'error'>('idle');
   const [errMsg, setErrMsg] = useState('');
 
@@ -13,7 +16,7 @@ export function Partner() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (form.hp) return;
+    if (form.website) return;
     setStatus('busy'); setErrMsg('');
     try {
       await api.submitInquiry({ ...form, type: 'partner' });
@@ -81,7 +84,7 @@ export function Partner() {
                 ) : (
                   <form className="form-stack" onSubmit={submit} noValidate>
                     <div className="hp-field" aria-hidden="true">
-                      <input tabIndex={-1} autoComplete="off" value={form.hp} onChange={e => set('hp', e.target.value)} />
+                      <input tabIndex={-1} autoComplete="off" value={form.website} onChange={e => set('website', e.target.value)} />
                     </div>
                     <div className="form-group">
                       <label className="form-label" htmlFor="partner-name">Full Name <span style={{ color: 'var(--color-error)' }}>*</span></label>

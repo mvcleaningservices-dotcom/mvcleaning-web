@@ -4,7 +4,9 @@ import { Seo } from '../components/Seo';
 import { api } from '../api';
 
 export function Contact() {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '', hp: '' });
+  // `website` is the honeypot — the name must match the backend DTO's whitelisted
+  // field, or the strict API rejects the submission ("property hp should not exist").
+  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '', website: '' });
   const [status, setStatus] = useState<'idle' | 'busy' | 'done' | 'error'>('idle');
   const [errMsg, setErrMsg] = useState('');
 
@@ -12,7 +14,7 @@ export function Contact() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (form.hp) return; // honeypot
+    if (form.website) return; // honeypot
     setStatus('busy'); setErrMsg('');
     try {
       await api.submitInquiry({ ...form, type: 'contact' });
@@ -52,7 +54,7 @@ export function Contact() {
                 <form className="form-stack" onSubmit={submit} noValidate>
                   {/* Honeypot */}
                   <div className="hp-field" aria-hidden="true">
-                    <input tabIndex={-1} autoComplete="off" value={form.hp} onChange={e => set('hp', e.target.value)} />
+                    <input tabIndex={-1} autoComplete="off" value={form.website} onChange={e => set('website', e.target.value)} />
                   </div>
 
                   <div className="form-row">
