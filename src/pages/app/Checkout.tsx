@@ -61,6 +61,8 @@ export function Checkout() {
   // dead-ending someone who has already logged in to book.
   const [unserved, setUnserved] = useState(false);
   const [leadSent, setLeadSent] = useState(false);
+  // Cart items dropped because they no longer exist in the live catalogue.
+  const [removedNames, setRemovedNames] = useState<string[]>([]);
 
   useEffect(() => {
     if (profile?.address) setAddress(profile.address);
@@ -70,6 +72,27 @@ export function Checkout() {
     // profile and must not fight the user as they type.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
+
+  // Reconcile the saved cart against the live catalogue. localStorage can hold
+  // services an admin has since removed/deactivated; left alone they fail the
+  // order with a vague "one or more unavailable". Drop them up front and say so.
+  // If that empties the cart, the guard below sends the user back to browse.
+  useEffect(() => {
+    let cancelled = false;
+    api.listServices()
+      .then((catalog) => {
+        if (cancelled) return;
+        const valid = new Set(catalog.map((s) => s.id));
+        const stale = items.filter((i) => !valid.has(i.id));
+        if (stale.length === 0) return;
+        stale.forEach((i) => remove(i.id));
+        setRemovedNames(stale.map((i) => i.name));
+      })
+      .catch(() => {}); // never block checkout on a failed reconcile
+    return () => { cancelled = true; };
+    // Run once on mount against the cart as it was restored.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Re-check availability whenever a complete pincode is entered.
   useEffect(() => {
@@ -138,6 +161,11 @@ export function Checkout() {
   return (
     <div className="co">
       <h1 className="co-title">Checkout</h1>
+      {removedNames.length > 0 && (
+        <div className="co-removed-note" role="status">
+          {removedNames.join(', ')} {removedNames.length > 1 ? 'are' : 'is'} no longer available and {removedNames.length > 1 ? 'were' : 'was'} removed from your cart.
+        </div>
+      )}
       <div className="co-grid">
         <div className="co-main">
           {/* Schedule */}
