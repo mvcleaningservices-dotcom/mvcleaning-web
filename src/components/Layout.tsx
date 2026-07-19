@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { Menu, X, Sparkles, Phone, Mail, MapPin } from 'lucide-react';
-import { WhatsAppButton } from './WhatsAppButton';
 import { AppDownloadModal } from './AppDownloadModal';
 import { StructuredData, LOCAL_BUSINESS_SCHEMA } from './StructuredData';
 
@@ -134,7 +133,6 @@ export function Layout() {
 
       {/* ── Modals & Globals ── */}
       <AppDownloadModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
-      <WhatsAppButton />
 
       {/* ── Footer ── */}
       <footer className="site-footer" role="contentinfo">

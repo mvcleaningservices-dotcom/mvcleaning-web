@@ -8,7 +8,6 @@ import { useAuth } from '../auth/AuthContext';
 import { CartProvider, useCart } from '../cart/CartContext';
 import { ServiceDetailProvider } from '../detail/ServiceDetailContext';
 import { ServiceDetailSheet } from './app/ServiceDetailSheet';
-import { WhatsAppButton } from './WhatsAppButton';
 import { ScrollToTop } from './ScrollToTop';
 import '../styles/app.css';
 
@@ -152,9 +151,6 @@ function StoreShell() {
 
       {/* ── Service detail sheet (global, above all content) ── */}
       <ServiceDetailSheet />
-
-      {/* ── WhatsApp FAB ── */}
-      <WhatsAppButton phone="919999999999" />
 
       {/* ── Footer (dark, Urban Company–style) ── */}
       <footer className="store-footer">
