@@ -5,7 +5,7 @@ import { Seo } from '../components/Seo';
 import { Reveal } from '../components/ScrollReveal';
 import { api } from '../api';
 
-interface Post { id: string; title: string; content: string; publishedAt: string; }
+interface Post { id: string; title: string; content: string; coverImage?: string; publishedAt: string; }
 
 
 
@@ -69,9 +69,13 @@ export function BlogPostPage() {
             </div>
 
             <div className="blog-post-cover">
-              <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, var(--color-primary-50), var(--color-primary-100))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-400)' }}>
-                <BookOpen size={64} aria-hidden="true" />
-              </div>
+              {post.coverImage ? (
+                <img src={post.coverImage} alt={post.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, var(--color-primary-50), var(--color-primary-100))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-400)' }}>
+                  <BookOpen size={64} aria-hidden="true" />
+                </div>
+              )}
             </div>
 
             <div className="blog-post-body">{post.content}</div>

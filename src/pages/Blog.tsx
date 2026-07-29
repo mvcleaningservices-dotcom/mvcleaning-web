@@ -5,7 +5,7 @@ import { Seo } from '../components/Seo';
 import { Reveal } from '../components/ScrollReveal';
 import { api } from '../api';
 
-interface Post { id: string; slug: string; title: string; excerpt: string; publishedAt: string; }
+interface Post { id: string; slug: string; title: string; excerpt: string; coverImage?: string; publishedAt: string; }
 
 export function Blog() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -74,9 +74,13 @@ export function Blog() {
                   <Reveal key={p.id} delay={i * 100} className={isFeatured ? 'featured-post-wrap' : ''}>
                     <Link to={`/blog/${p.slug}`} className={`blog-card ${isFeatured ? 'featured' : ''}`} style={isFeatured ? { gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 0, minHeight: 340 } : {}}>
                       <div className="blog-card-cover" style={isFeatured ? { height: '100%', minHeight: 300 } : {}}>
-                        <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, var(--color-primary-50), var(--color-primary-100))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-400)' }}>
-                          <BookOpen size={isFeatured ? 64 : 40} />
-                        </div>
+                        {p.coverImage ? (
+                          <img src={p.coverImage} alt={p.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        ) : (
+                          <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, var(--color-primary-50), var(--color-primary-100))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-400)' }}>
+                            <BookOpen size={isFeatured ? 64 : 40} />
+                          </div>
+                        )}
                       </div>
                       <div className="blog-card-body" style={isFeatured ? { display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: 'var(--space-8)' } : {}}>
                         <div className="blog-card-date">

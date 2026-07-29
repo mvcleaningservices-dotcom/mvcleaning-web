@@ -201,27 +201,6 @@
   min-width: 0;
 }
 
-/* Location pill */
-.store-loc {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  cursor: pointer;
-  background: var(--color-slate-100);
-  border: none;
-  padding: 7px 12px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  border-radius: var(--radius-pill);
-  transition: background var(--duration-fast), color var(--duration-fast);
-  white-space: nowrap;
-}
-.store-loc svg { color: var(--color-primary-600); }
-.store-loc:hover {
-  background: var(--color-primary-50);
-  color: var(--color-primary-700);
-}
 
 /* Search bar */
 .store-search {
@@ -246,6 +225,10 @@
 .store-search svg { color: var(--color-text-muted); flex-shrink: 0; }
 .store-search input {
   flex: 1;
+  min-width: 0; /* Let input shrink on narrow screens */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   border: none;
   outline: none;
   background: transparent;
@@ -2112,8 +2095,7 @@
 }
 
 @media (max-width: 640px) {
-  /* Location pill: icon only */
-  .store-loc span { display: none; }
+
   /* Tighten main content padding */
   .store-main { padding: var(--space-4) var(--space-4) 100px; }
   /* Service grid: 2-column at comfortable size */
@@ -2143,11 +2125,11 @@
     gap: var(--space-2);
     height: 60px;
   }
-  /* Search bar: reduce internal padding */
+  /* Search bar: reduce internal padding and shrink login button */
   .store-search { padding: 0 var(--space-3); }
   .store-search input { font-size: 13px; padding: 9px 0; }
-  /* Location pill: tighter */
-  .store-loc { padding: 5px 8px; font-size: 12px; }
+  .store-login { padding: 7px 12px; font-size: 13px; }
+
   /* Keep disc-cats synced with new header height */
   .disc-cats { top: 60px; }
   /* Service grid: single column on very small phones */

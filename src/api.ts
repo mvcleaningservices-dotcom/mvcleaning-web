@@ -96,6 +96,7 @@ export interface BlogSummary {
   title: string;
   slug: string;
   excerpt: string;
+  coverImage?: string;
   publishedAt: string;
 }
 

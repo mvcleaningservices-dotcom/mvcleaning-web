@@ -65,7 +65,7 @@ export function Home() {
             </h1>
             <p className="hero-sub">
               Reliable, vetted cleaning professionals for your home — deep cleaning,
-              bathrooms, kitchens, and more. Pay a small advance and we handle the rest.
+              bathrooms, kitchens, and more. Expert results, every single visit.
             </p>
             <div className="hero-ctas">
               <Link to="/services" className="btn-hero-primary">

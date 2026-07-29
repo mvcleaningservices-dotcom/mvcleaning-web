@@ -38,7 +38,7 @@ export function Privacy() {
       <section className="container legal-layout">
         
         {/* TOC Sidebar */}
-        <aside style={{ position: 'sticky', top: 'var(--space-24)' }}>
+        <aside className="legal-toc">
           <div className="card" style={{ padding: 'var(--space-6)' }}>
             <h3 className="text-lg text-primary" style={{ marginBottom: 'var(--space-4)' }}>Contents</h3>
             <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>

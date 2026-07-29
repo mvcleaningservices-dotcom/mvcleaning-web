@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
-  MapPin, Sparkles, ShieldCheck, Wallet, IndianRupee, ArrowRight,
-  LayoutGrid, Wrench, Bug, ChevronDown, Smartphone,
+  MapPin, Sparkles, ShieldCheck, IndianRupee, ArrowRight,
+  LayoutGrid, Wrench, Bug, ChevronDown, Smartphone, Clock, Star,
 } from 'lucide-react';
 import { api, type ServiceItem, type PopularService } from '../../api';
 import { Seo } from '../../components/Seo';
@@ -203,14 +203,15 @@ export function AppHome() {
         <section className="home-hero">
           <div className="home-hero-text">
             <h2>Sparkling homes, booked in minutes</h2>
-            <p>Vetted professionals at your door. Pay a small advance now — settle the rest only after the job's done.</p>
+            <p>Expert professionals trained to deliver spotless results — every visit, every time.</p>
             <button className="btn-hero" onClick={() => servicesRef.current?.scrollIntoView({ behavior: 'smooth' })}>
               Explore services <ArrowRight size={18} />
             </button>
             <div className="home-hero-badges">
               <span><ShieldCheck size={15} /> Vetted professionals</span>
-              <span><Wallet size={15} /> Pay after service</span>
               <span><IndianRupee size={15} /> Transparent pricing</span>
+              <span><Star size={15} /> Professional servicing</span>
+              <span><Clock size={15} /> On time visit</span>
             </div>
           </div>
           <div className="home-hero-img"><img src="/images/hero.webp" alt="Professional home cleaning" loading="lazy" /></div>
