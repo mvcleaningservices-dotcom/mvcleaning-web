@@ -74,8 +74,10 @@ export function Layout() {
       <header className={`site-header ${scrolled ? 'scrolled' : ''}`} role="banner">
         <div className="container header-inner">
           {/* Logo */}
-          <Link to="/" className="logo" aria-label="MV Cleaning Services — home" style={{ display: 'block', height: 38 }}>
-            <img src="/images/logo.webp" alt="MV Cleaning Services" style={{ height: 38, borderRadius: 4 }} />
+          {/* Plated mark — keeps the black logo text legible when a browser
+              forces dark mode over the white header. See StoreLayout. */}
+          <Link to="/" className="logo" aria-label="MV Cleaning Services — home" style={{ display: 'block', height: 44 }}>
+            <img src="/images/logo_plate.webp" alt="MV Cleaning Services" style={{ height: 44, borderRadius: 4 }} />
           </Link>
 
           {/* Desktop nav */}

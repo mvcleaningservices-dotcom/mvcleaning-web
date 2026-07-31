@@ -70,8 +70,9 @@ export function Login() {
     <div className="app-shell">
       <header className="app-header">
         <div className="app-header-inner">
-          <Link to="/" className="app-logo" style={{ display: 'block', height: 34 }}>
-            <img src="/images/logo.webp" alt="MV Cleaning Services" style={{ height: 34 }} />
+          {/* Plated mark — stays legible under browser force-dark. See StoreLayout. */}
+          <Link to="/" className="app-logo" style={{ display: 'block', height: 39 }}>
+            <img src="/images/logo_plate.webp" alt="MV Cleaning Services" style={{ height: 39 }} />
           </Link>
         </div>
       </header>

@@ -74,10 +74,17 @@ function StoreShell() {
       <header className={`store-header${scrolled ? ' scrolled' : ''}`}>
         <div className="store-header-inner">
           {/* Logo */}
-          <Link to="/" className="app-logo" aria-label="MV Cleaning Home" style={{ display: 'block', height: 34 }}>
-            {/* Colour mark: the header is white, which is the only surface the
-                full-colour logo can sit on (its artwork IS the brand blue). */}
-            <img src="/images/logo.webp" alt="MV Cleaning Services" style={{ height: 34 }} />
+          <Link to="/" className="app-logo" aria-label="MV Cleaning Home" style={{ display: 'block', height: 39 }}>
+            {/* Colour mark on a baked-in white plate. The logo's text and roof
+                outlines are BLACK, so on a white header they read fine — but
+                browser "force dark" modes (Opera Night mode, Samsung Internet,
+                Chrome Auto Dark) darken the header while leaving <img> pixels
+                untouched, making the black artwork disappear. `color-scheme:
+                light only` does NOT stop them. The plate is part of the image,
+                and no force-dark mode repaints image pixels, so the mark stays
+                legible everywhere. On the white header the plate is invisible.
+                Height is 39 (not 34) so the padding doesn't shrink the mark. */}
+            <img src="/images/logo_plate.webp" alt="MV Cleaning Services" style={{ height: 39 }} />
           </Link>
 
 
