@@ -183,6 +183,13 @@ export const api = {
   }) => request<CreateBookingResult>('/bookings', { method: 'POST', body: JSON.stringify(payload) }, true),
   testConfirm: (bookingId: string) =>
     request<Booking>('/payments/test-confirm', { method: 'POST', body: JSON.stringify({ bookingId }) }, true),
+  /** Hand Razorpay's checkout callback to the server, which verifies the
+   *  signature before confirming the booking. */
+  verifyPayment: (payload: {
+    razorpayOrderId: string;
+    razorpayPaymentId: string;
+    razorpaySignature: string;
+  }) => request<Booking>('/payments/verify', { method: 'POST', body: JSON.stringify(payload) }, true),
   myBookings: () => request<Booking[]>('/bookings/mine', {}, true),
   payFinal: (bookingId: string, walletAmount: number) =>
     request<Booking>(`/bookings/${bookingId}/final-payment`, { method: 'POST', body: JSON.stringify({ walletAmount }) }, true),
@@ -190,8 +197,22 @@ export const api = {
   /* Wallet */
   getWallet: () => request<WalletState>('/wallet', {}, true),
   topupWallet: (amount: number) =>
-    request<{ transactionId: string; payment: { required: boolean; provider?: string; amount?: number } }>(
-      '/wallet/topup', { method: 'POST', body: JSON.stringify({ amount }) }, true),
+    request<{
+      transactionId: string;
+      payment: {
+        required: boolean;
+        provider?: 'razorpay' | 'test';
+        razorpayOrderId?: string;
+        keyId?: string;
+        amount?: number;
+      };
+    }>('/wallet/topup', { method: 'POST', body: JSON.stringify({ amount }) }, true),
   confirmTopupTest: (transactionId: string) =>
     request<{ balance: number }>('/wallet/topup/test-confirm', { method: 'POST', body: JSON.stringify({ transactionId }) }, true),
+  /** Verify a wallet top-up paid through Razorpay Checkout (server-side signature check). */
+  verifyTopup: (payload: {
+    razorpayOrderId: string;
+    razorpayPaymentId: string;
+    razorpaySignature: string;
+  }) => request<{ balance: number }>('/wallet/topup/verify', { method: 'POST', body: JSON.stringify(payload) }, true),
 };

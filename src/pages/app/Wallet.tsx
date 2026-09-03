@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ArrowDownLeft, ArrowUpRight } from 'lucide-react';
 import { api, type WalletState } from '../../api';
+import { loadRazorpay, openCheckout } from '../../lib/razorpay';
 
 const QUICK = [100, 200, 500, 1000];
 
@@ -9,6 +10,7 @@ export function Wallet() {
   const [wallet, setWallet] = useState<WalletState>({ balance: 0, history: [] });
   const [amount, setAmount] = useState('');
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
@@ -27,13 +29,30 @@ export function Wallet() {
     const value = Math.floor(Number(amount) || 0);
     if (value < 1) return;
     setBusy(true);
+    setError('');
     try {
       const res = await api.topupWallet(value);
-      if (res.payment.provider === 'test') await api.confirmTopupTest(res.transactionId);
+      if (res.payment.provider === 'test') {
+        await api.confirmTopupTest(res.transactionId);
+      } else if (res.payment.provider === 'razorpay') {
+        // Real money: open Razorpay Checkout, then let the server verify the
+        // signature before the balance is credited.
+        await loadRazorpay();
+        const result = await openCheckout({
+          keyId: res.payment.keyId!,
+          orderId: res.payment.razorpayOrderId!,
+          amount: res.payment.amount ?? value,
+          name: 'MV Cleaning Services',
+          description: `Wallet top-up of ₹${value}`,
+        });
+        await api.verifyTopup(result);
+      }
       setAmount('');
       await load();
-    } catch {
-      /* ignore */
+    } catch (e) {
+      // A silent failure here looks identical to a top-up that did nothing —
+      // always tell the customer what happened.
+      setError((e as Error).message || 'Top-up failed. Please try again.');
     } finally {
       setBusy(false);
     }
@@ -59,6 +78,7 @@ export function Wallet() {
           ))}
         </div>
         <input className="auth-input" inputMode="numeric" placeholder="Enter amount" value={amount} onChange={(e) => setAmount(e.target.value.replace(/\D/g, ''))} />
+        {error && <p className="auth-error">{error}</p>}
         <button className="btn-primary" style={{ marginTop: 12 }} disabled={busy || !amount} onClick={topUp}>{busy ? 'Adding…' : 'Add money'}</button>
       </div>
 

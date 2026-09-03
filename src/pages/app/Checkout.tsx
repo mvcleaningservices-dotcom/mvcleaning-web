@@ -5,6 +5,7 @@ import { api } from '../../api';
 import { useAuth } from '../../auth/AuthContext';
 import { useCart } from '../../cart/CartContext';
 import { serviceImage } from '../../lib/serviceImage';
+import { loadRazorpay, openCheckout } from '../../lib/razorpay';
 
 const TIME_SLOTS = ['08:00-10:00', '10:00-12:00', '12:00-14:00', '14:00-16:00', '16:00-18:00'];
 
@@ -132,8 +133,26 @@ export function Checkout() {
       setPincode(pin);
       if (res.payment.required && res.payment.provider === 'test') {
         await api.testConfirm(res.booking.id);
+      } else if (res.payment.required && res.payment.provider === 'razorpay') {
+        // Real money: open Razorpay Checkout and only treat the booking as
+        // placed once the server has verified the payment signature. If the
+        // customer cancels we stay on this page with the cart intact — the
+        // booking already exists as PENDING and is picked up by the same
+        // razorpayOrderId if they retry.
+        await loadRazorpay();
+        const result = await openCheckout({
+          keyId: res.payment.keyId!,
+          orderId: res.payment.razorpayOrderId!,
+          amount: res.payment.amount ?? 0,
+          name: 'MV Cleaning Services',
+          description: `Advance for order ${res.booking.orderNumber}`,
+          prefill: {
+            name: profile?.name ?? undefined,
+            contact: profile?.mobile ?? undefined,
+          },
+        });
+        await api.verifyPayment(result);
       }
-      // (Live Razorpay web checkout is wired in W6; in dev the provider is 'test'.)
       setPlacedOrder(res.booking.orderNumber);
       clear();
     } catch (e) {
