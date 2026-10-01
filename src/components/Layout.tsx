@@ -183,12 +183,12 @@ export function Layout() {
               <h4>Contact</h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {[
-                  { icon: Phone, text: 'Coming soon' },
-                  { icon: Mail,  text: 'hello@mvcleaning.in' },
-                  { icon: MapPin,text: 'Mumbai, Maharashtra' },
+                  { icon: Phone, text: '+91 81518 42101' },
+                  { icon: Mail,  text: 'mvcleaningservices93@gmail.com' },
+                  { icon: MapPin,text: 'No. 123/3, Ground Floor, Near Basavanna Temple, Madavara, Dobaspet Industrial Area, Bengaluru Rural — 562123, Karnataka, India' },
                 ].map(({ icon: Icon, text }) => (
-                  <div key={text} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: 'rgba(255,255,255,0.55)' }}>
-                    <Icon size={14} style={{ flexShrink: 0 }} />
+                  <div key={text} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 14, lineHeight: 1.5, color: 'rgba(255,255,255,0.55)' }}>
+                    <Icon size={14} style={{ flexShrink: 0, marginTop: 3 }} />
                     <span>{text}</span>
                   </div>
                 ))}

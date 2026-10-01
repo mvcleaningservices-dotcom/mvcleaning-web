@@ -95,16 +95,16 @@ export function Contact() {
               <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 24 }}>Get in Touch</h2>
               <div className="contact-info">
                 {[
-                  { icon: Phone, label: 'Phone', value: '+91 99999 99999' },
-                  { icon: Mail,  label: 'Email', value: 'hello@mvcleaning.in' },
-                  { icon: MapPin,label: 'Address', value: 'Mumbai, Maharashtra' },
+                  { icon: Phone, label: 'Phone', value: '+91 81518 42101' },
+                  { icon: Mail,  label: 'Email', value: 'mvcleaningservices93@gmail.com' },
+                  { icon: MapPin,label: 'Address', value: 'No. 123/3, Ground Floor,\nNear Basavanna Temple,\nMadavara, Dobaspet Industrial Area,\nBengaluru Rural — 562123,\nKarnataka, India' },
                   { icon: Clock, label: 'Hours',  value: 'Mon–Sat, 8 AM – 8 PM' },
                 ].map(({ icon: Icon, label, value }) => (
                   <div key={label} className="contact-info-item">
                     <div className="contact-info-icon" aria-hidden="true"><Icon size={20} /></div>
                     <div>
                       <div className="contact-info-label">{label}</div>
-                      <div className="contact-info-value">{value}</div>
+                      <div className="contact-info-value" style={{ whiteSpace: 'pre-line' }}>{value}</div>
                     </div>
                   </div>
                 ))}

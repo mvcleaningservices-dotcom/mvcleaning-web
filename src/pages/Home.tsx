@@ -34,9 +34,9 @@ const TRUST = [
 ];
 
 const TESTIMONIALS = [
-  { name: 'Priya S.',    location: 'Mumbai', text: 'Booked a deep clean for my 3BHK and was absolutely blown away. The team was professional, thorough, and on time. Will definitely book again!', rating: 5 },
-  { name: 'Rahul M.',    location: 'Pune',   text: 'Best kitchen cleaning service I\'ve used. They cleaned areas I didn\'t even think of. The booking process on the app is super smooth.', rating: 5 },
-  { name: 'Sneha K.',    location: 'Nashik', text: 'Excellent sofa cleaning — my couch looks brand new. Very professional team, reasonably priced, and great communication throughout.', rating: 5 },
+  { name: 'Priya S.',    location: 'Bengaluru', text: 'Booked a deep clean for my 3BHK and was absolutely blown away. The team was professional, thorough, and on time. Will definitely book again!', rating: 5 },
+  { name: 'Rahul M.',    location: 'Bengaluru', text: 'Best kitchen cleaning service I\'ve used. They cleaned areas I didn\'t even think of. The booking process on the app is super smooth.', rating: 5 },
+  { name: 'Sneha K.',    location: 'Bengaluru', text: 'Excellent sofa cleaning — my couch looks brand new. Very professional team, reasonably priced, and great communication throughout.', rating: 5 },
 ];
 
 export function Home() {
@@ -116,7 +116,7 @@ export function Home() {
           </div>
           <div className="trust-bar-item">
             <MapPin size={16} aria-hidden="true" />
-            Mumbai · Pune · Nashik
+            Bengaluru
           </div>
         </div>
       </div>

@@ -102,7 +102,7 @@ export function About() {
                 <div className="timeline-icon" />
                 <div className="timeline-content">
                   <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Growing the Network</h3>
-                  <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.6, margin: 0 }}>We rigorously trained our first batch of 10 professionals. Word of mouth spread, and soon we were serving hundreds of homes across Mumbai, ensuring every professional met our strict background and quality checks.</p>
+                  <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.6, margin: 0 }}>We rigorously trained our first batch of 10 professionals. Word of mouth spread, and soon we were serving hundreds of homes across Bengaluru, ensuring every professional met our strict background and quality checks.</p>
                 </div>
               </div>
               <div className="timeline-item">

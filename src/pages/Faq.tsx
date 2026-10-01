@@ -5,7 +5,7 @@ import { StructuredData } from '../components/StructuredData';
 import { Reveal } from '../components/ScrollReveal';
 
 const FAQS = [
-  { q: 'What areas do you currently serve?', a: 'We operate across select pincodes in Mumbai, Pune, and Nashik. Enter your pincode on our website to see available services in your area. We\'re expanding rapidly!' },
+  { q: 'What areas do you currently serve?', a: 'We operate across select pincodes in Bengaluru. Enter your pincode on our website to see available services in your area. We\'re expanding rapidly!' },
   { q: 'How do I book a service?', a: 'Visit the MV Cleaning website, enter your pincode, browse services, pick a date and time, pay a small advance, and you\'re confirmed. It takes under 2 minutes.' },
   { q: 'How much does it cost?', a: 'Pricing varies by service. You can see all prices on our Services page. Most services start from ₹149. There are no hidden charges.' },
   { q: 'What is the advance payment?', a: 'A small advance (typically ₹49) is collected at booking to confirm your slot. The remaining balance is paid after service completion — via wallet, UPI, or cash.' },
