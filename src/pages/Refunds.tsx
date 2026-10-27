@@ -79,7 +79,7 @@ export function Refunds() {
               Advance Payment Model
             </h2>
             <p className="text-secondary" style={{ lineHeight: 1.7, marginBottom: 'var(--space-4)' }}>
-              To confirm a booking and secure a verified professional, we require a nominal advance payment (typically ₹49, though this may vary based on the specific service). 
+              To confirm a booking and secure a verified professional, we require a nominal advance payment (typically ₹149, though this may vary based on the specific service). 
             </p>
             <p className="text-secondary" style={{ lineHeight: 1.7 }}>
               The remaining balance is collected only after the service is successfully completed. You may pay this final balance using cash, UPI, or your MV Cleaning in-app wallet.
