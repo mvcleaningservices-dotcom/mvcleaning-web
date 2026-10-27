@@ -16,6 +16,7 @@ export function Login() {
 
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
   const [mobile, setMobile] = useState('');
+  const [userLocation, setUserLocation] = useState('');
   const [code, setCode] = useState('');
   const [devOtp, setDevOtp] = useState<string | undefined>();
   const [busy, setBusy] = useState(false);
@@ -58,6 +59,9 @@ export function Login() {
     try {
       const res = await api.verifyOtp(mobile.trim(), code.trim());
       await login(res.accessToken);
+      if (userLocation.trim()) {
+        await api.updateProfile({ location: userLocation.trim() }).catch(() => {});
+      }
       navigate(from, { replace: true });
     } catch (err) {
       setError((err as Error).message || 'Invalid OTP.');
@@ -83,6 +87,18 @@ export function Login() {
             <form onSubmit={sendOtp}>
               <h1 className="auth-title">Log in or sign up</h1>
               <p className="auth-sub">Enter your mobile number to continue.</p>
+              <label className="auth-label" htmlFor="location">Location <span style={{ fontWeight: 400, color: 'var(--color-text-subtle, #94a3b8)', fontSize: 12 }}>(optional)</span></label>
+              <input
+                id="location"
+                className="auth-input"
+                type="text"
+                autoComplete="address-level2"
+                placeholder="e.g. Koramangala, Bengaluru"
+                maxLength={120}
+                value={userLocation}
+                onChange={(e) => setUserLocation(e.target.value)}
+                style={{ marginBottom: 16 }}
+              />
               <label className="auth-label" htmlFor="mobile">Mobile number</label>
               <div className="auth-phone">
                 <span className="auth-cc">+91</span>

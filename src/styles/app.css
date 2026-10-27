@@ -381,7 +381,7 @@
   position: fixed;
   /* Sit above the cart bar (60px) with 8px breathing room */
   bottom: 88px;
-  right: var(--space-5);
+  left: var(--space-5);
   z-index: var(--z-toast);
   display: flex;
   align-items: center;
@@ -985,12 +985,42 @@
 }
 
 /* ── Popular row ── */
+.pop-scroll-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.pop-scroll-btn {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background var(--duration-fast), box-shadow var(--duration-fast);
+  z-index: 2;
+}
+.pop-scroll-btn:hover { background: var(--color-slate-100); box-shadow: var(--shadow-md); }
+.pop-scroll-btn--left { margin-right: var(--space-2); }
+.pop-scroll-btn--right { margin-left: var(--space-2); }
+/* Hide arrows on touch screens — swipe works natively */
+@media (hover: none) and (pointer: coarse) {
+  .pop-scroll-btn { display: none; }
+}
 .pop-row {
   display: flex;
   gap: var(--space-4);
   overflow-x: auto;
   padding-bottom: var(--space-2);
   scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
 }
 .pop-row::-webkit-scrollbar { display: none; }
 .pop-card {
@@ -1002,6 +1032,7 @@
   box-shadow: var(--shadow-sm);
   transition: box-shadow var(--duration-base), transform var(--duration-base);
   cursor: pointer;
+  scroll-snap-align: start;
 }
 .pop-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
 .pop-img {
@@ -2156,7 +2187,7 @@
   .app-banner-btns { flex-direction: column; gap: var(--space-3); }
   .app-store-pill { text-align: center; }
   /* WhatsApp fab: higher up to avoid overlap with cart bar */
-  .whatsapp-fab { bottom: 80px; right: var(--space-3); }
+  .whatsapp-fab { bottom: 80px; left: var(--space-3); }
   /* Strip cards: tighter */
   .strip-card { padding: var(--space-6) var(--space-4) var(--space-5); }
   .strip-badge { width: 52px; height: 52px; font-size: 22px; }

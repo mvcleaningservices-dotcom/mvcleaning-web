@@ -4,7 +4,7 @@ import { MessageCircle } from 'lucide-react';
  * Floating WhatsApp button — the #1 conversion tool for Indian local services.
  * Renders fixed at bottom-right, always visible.
  */
-export function WhatsAppButton({ phone = '919999999999' }: { phone?: string }) {
+export function WhatsAppButton({ phone = '918151842101' }: { phone?: string }) {
   const message = encodeURIComponent('Hi! I\'d like to book a cleaning service.');
   const url = `https://wa.me/${phone}?text=${message}`;
 

@@ -972,7 +972,7 @@ main { flex: 1; }
 .whatsapp-fab {
   position: fixed;
   bottom: 24px;
-  right: 24px;
+  left: 24px;
   z-index: var(--z-overlay);
   display: flex;
   align-items: center;

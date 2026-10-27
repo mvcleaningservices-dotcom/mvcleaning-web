@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { Menu, X, Sparkles, Phone, Mail, MapPin } from 'lucide-react';
 import { AppDownloadModal } from './AppDownloadModal';
 import { StructuredData, LOCAL_BUSINESS_SCHEMA } from './StructuredData';
+import { WhatsAppButton } from './WhatsAppButton';
 
 const NAV_LINKS = [
   { to: '/',        label: 'Home',     end: true },
@@ -135,6 +136,7 @@ export function Layout() {
 
       {/* ── Modals & Globals ── */}
       <AppDownloadModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      <WhatsAppButton />
 
       {/* ── Footer ── */}
       <footer className="site-footer" role="contentinfo">

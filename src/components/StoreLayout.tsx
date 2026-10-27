@@ -5,6 +5,7 @@ import { ShoppingCart, User, Search, ClipboardList, Wallet as WalletIcon } from 
 const InstaIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>;
 const FbIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>;
 import { useAuth } from '../auth/AuthContext';
+import { WhatsAppButton } from './WhatsAppButton';
 import { CartProvider, useCart } from '../cart/CartContext';
 import { ServiceDetailProvider } from '../detail/ServiceDetailContext';
 import { ServiceDetailSheet } from './app/ServiceDetailSheet';
@@ -153,6 +154,7 @@ function StoreShell() {
 
       {/* ── Service detail sheet (global, above all content) ── */}
       <ServiceDetailSheet />
+      <WhatsAppButton />
 
       {/* ── Footer (dark, Urban Company–style) ── */}
       <footer className="store-footer">

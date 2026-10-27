@@ -3,6 +3,14 @@ import { Routes, Route } from 'react-router-dom';
 import { StoreLayout } from './components/StoreLayout';
 import { AuthProvider } from './auth/AuthContext';
 import { RequireAuth } from './auth/RequireAuth';
+import { HeroBannerProvider } from './context/HeroBannerContext';
+import { AdminAuthProvider } from './admin/AdminAuthContext';
+import { AdminRequireAuth } from './admin/AdminRequireAuth';
+import { AdminLayout } from './admin/AdminLayout';
+import { AdminLogin } from './admin/AdminLogin';
+import { AdminSettings } from './admin/pages/AdminSettings';
+import { AdminCustomers } from './admin/pages/AdminCustomers';
+import { AdminPlaceholder } from './admin/pages/AdminPlaceholder';
 import './App.css';
 
 // The homepage IS the booking product (discovery). Marketing/legal pages are
@@ -37,42 +45,58 @@ function PageLoader() {
 
 function App() {
   return (
-    <AuthProvider>
-      <Suspense fallback={<PageLoader />}>
-        <Routes>
-          {/* One product shell for the whole site */}
-          <Route element={<StoreLayout />}>
-            {/* Homepage = booking discovery (browsable without login) */}
-            <Route index element={<AppHome />} />
+    <HeroBannerProvider>
+      <AdminAuthProvider>
+        <AuthProvider>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              {/* ── Admin panel ── */}
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route element={<AdminRequireAuth />}>
+                <Route element={<AdminLayout />}>
+                  <Route path="/admin/settings" element={<AdminSettings />} />
+                  <Route path="/admin/orders" element={<AdminPlaceholder title="Orders" />} />
+                  <Route path="/admin/service-partners" element={<AdminPlaceholder title="Service Partners" />} />
+                  <Route path="/admin/services" element={<AdminPlaceholder title="Services" />} />
+                  <Route path="/admin/customers" element={<AdminCustomers />} />
+                  <Route path="/admin/leads" element={<AdminPlaceholder title="Leads" />} />
+                  <Route path="/admin/sub-admins" element={<AdminPlaceholder title="Sub Admins" />} />
+                  <Route path="/admin/reports" element={<AdminPlaceholder title="Reports" />} />
+                  <Route path="/admin/activity" element={<AdminPlaceholder title="Activity" />} />
+                  <Route path="/admin/blog" element={<AdminPlaceholder title="Blog" />} />
+                  <Route path="/admin/inquiries" element={<AdminPlaceholder title="Inquiries" />} />
+                </Route>
+              </Route>
 
-            {/* Marketing / legal (footer links) */}
-            <Route path="services" element={<Services />} />
-            <Route path="about" element={<About />} />
-            <Route path="blog" element={<Blog />} />
-            <Route path="blog/:slug" element={<BlogPostPage />} />
-            <Route path="contact" element={<Contact />} />
-            <Route path="faq" element={<Faq />} />
-            <Route path="privacy" element={<Privacy />} />
-            <Route path="terms" element={<Terms />} />
-            <Route path="refunds" element={<Refunds />} />
-            <Route path="partner" element={<Partner />} />
+              {/* One product shell for the whole site */}
+              <Route element={<StoreLayout />}>
+                <Route index element={<AppHome />} />
+                <Route path="services" element={<Services />} />
+                <Route path="about" element={<About />} />
+                <Route path="blog" element={<Blog />} />
+                <Route path="blog/:slug" element={<BlogPostPage />} />
+                <Route path="contact" element={<Contact />} />
+                <Route path="faq" element={<Faq />} />
+                <Route path="privacy" element={<Privacy />} />
+                <Route path="terms" element={<Terms />} />
+                <Route path="refunds" element={<Refunds />} />
+                <Route path="partner" element={<Partner />} />
+                <Route element={<RequireAuth />}>
+                  <Route path="checkout" element={<Checkout />} />
+                  <Route path="bookings" element={<Bookings />} />
+                  <Route path="wallet" element={<Wallet />} />
+                  <Route path="account" element={<Account />} />
+                </Route>
+                <Route path="*" element={<NotFound />} />
+              </Route>
 
-            {/* Login-gated — the only login wall is at checkout/account */}
-            <Route element={<RequireAuth />}>
-              <Route path="checkout" element={<Checkout />} />
-              <Route path="bookings" element={<Bookings />} />
-              <Route path="wallet" element={<Wallet />} />
-              <Route path="account" element={<Account />} />
-            </Route>
-
-            <Route path="*" element={<NotFound />} />
-          </Route>
-
-          {/* Standalone full-page login */}
-          <Route path="/login" element={<Login />} />
-        </Routes>
-      </Suspense>
-    </AuthProvider>
+              {/* Standalone full-page login */}
+              <Route path="/login" element={<Login />} />
+            </Routes>
+          </Suspense>
+        </AuthProvider>
+      </AdminAuthProvider>
+    </HeroBannerProvider>
   );
 }
 

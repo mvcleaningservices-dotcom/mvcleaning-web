@@ -3,10 +3,12 @@ import { useSearchParams } from 'react-router-dom';
 import {
   MapPin, Sparkles, ShieldCheck, IndianRupee, ArrowRight,
   LayoutGrid, Wrench, Bug, ChevronDown, Smartphone, Clock, Star,
+  ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import { api, type ServiceItem, type PopularService } from '../../api';
 import { Seo } from '../../components/Seo';
 import { useAuth } from '../../auth/AuthContext';
+import { useHeroBanner } from '../../context/HeroBannerContext';
 import { ServiceCard } from '../../components/app/ServiceCard';
 import { ServiceThumb } from '../../components/app/ServiceThumb';
 import { CartBar } from '../../components/app/CartBar';
@@ -79,9 +81,18 @@ export function AppHome() {
   const [error, setError] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
+  const { config: hero } = useHeroBanner();
+
   const [searchParams] = useSearchParams();
   const search = (searchParams.get('q') || '').trim();
   const servicesRef = useRef<HTMLDivElement>(null);
+  const popRowRef = useRef<HTMLDivElement>(null);
+
+  const scrollPop = (dir: 'left' | 'right') => {
+    const el = popRowRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir === 'right' ? 240 : -240, behavior: 'smooth' });
+  };
 
   /** Fetch the catalogue — area-filtered when we know the area, full otherwise. */
   const fetchServices = useCallback(async (pin: string | null, q: string) => {
@@ -202,16 +213,16 @@ export function AppHome() {
       {showRich && (
         <section className="home-hero">
           <div className="home-hero-text">
-            <h2>Sparkling homes, booked in minutes</h2>
-            <p>Expert professionals trained to deliver spotless results — every visit, every time.</p>
+            <h2>{hero.heading}</h2>
+            <p>{hero.subtext}</p>
             <button className="btn-hero" onClick={() => servicesRef.current?.scrollIntoView({ behavior: 'smooth' })}>
-              Explore services <ArrowRight size={18} />
+              {hero.buttonText} <ArrowRight size={18} />
             </button>
             <div className="home-hero-badges">
-              <span><ShieldCheck size={15} /> Vetted professionals</span>
-              <span><IndianRupee size={15} /> Transparent pricing</span>
-              <span><Star size={15} /> Professional servicing</span>
-              <span><Clock size={15} /> On time visit</span>
+              {hero.badge1 && <span><ShieldCheck size={15} /> {hero.badge1}</span>}
+              {hero.badge2 && <span><IndianRupee size={15} /> {hero.badge2}</span>}
+              {hero.badge3 && <span><Star size={15} /> {hero.badge3}</span>}
+              {hero.badge4 && <span><Clock size={15} /> {hero.badge4}</span>}
             </div>
           </div>
           <div className="home-hero-img"><img src="/images/hero.webp" alt="Professional home cleaning" loading="lazy" /></div>
@@ -270,16 +281,24 @@ export function AppHome() {
           {popular.length >= 2 && (
             <section className="disc-section">
               <div className="disc-section-head"><Sparkles size={18} /><h2>Most popular</h2></div>
-              <div className="pop-row">
-                {popular.map((s) => (
-                  <div key={s.id} className="pop-card">
-                    <ServiceThumb service={s} className="pop-img" iconSize={32} />
-                    <div className="pop-body">
-                      <span className="svc-name">{s.name}</span>
-                      <div className="svc-foot"><div className="svc-price">from <strong>₹{s.price}</strong></div></div>
+              <div className="pop-scroll-wrap">
+                <button className="pop-scroll-btn pop-scroll-btn--left" onClick={() => scrollPop('left')} aria-label="Scroll left">
+                  <ChevronLeft size={20} />
+                </button>
+                <div className="pop-row" ref={popRowRef}>
+                  {popular.map((s) => (
+                    <div key={s.id} className="pop-card">
+                      <ServiceThumb service={s} className="pop-img" iconSize={32} />
+                      <div className="pop-body">
+                        <span className="svc-name">{s.name}</span>
+                        <div className="svc-foot"><div className="svc-price">from <strong>₹{s.price}</strong></div></div>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+                <button className="pop-scroll-btn pop-scroll-btn--right" onClick={() => scrollPop('right')} aria-label="Scroll right">
+                  <ChevronRight size={20} />
+                </button>
               </div>
             </section>
           )}

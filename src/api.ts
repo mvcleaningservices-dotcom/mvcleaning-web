@@ -42,6 +42,7 @@ export interface Profile {
   name: string | null;
   address: string;
   pincode: string;
+  location: string;
 }
 
 export interface Booking {
@@ -126,6 +127,44 @@ async function request<T>(path: string, options: RequestInit = {}, auth = false)
 }
 
 /* ── API ───────────────────────────────────────────────────────────────── */
+/* ── Admin customer type ───────────────────────────────────────────────── */
+export interface AdminCustomer {
+  id: string;
+  username: string;
+  phone: string;
+  location: string;
+  noOfOrders: number;
+  lastLogin: string | null;
+}
+
+/* ── Admin API (uses admin JWT from localStorage) ──────────────────────── */
+async function adminRequest<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const token = localStorage.getItem('mv_admin_token');
+  const res = await fetch(`${BASE_URL}${path}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(options.headers || {}),
+    },
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg = Array.isArray((data as { message?: unknown })?.message)
+      ? (data as { message: string[] }).message.join(', ')
+      : (data as { message?: string })?.message || 'Request failed';
+    throw new Error(msg);
+  }
+  return data as T;
+}
+
+export const adminApi = {
+  listCustomers: (search?: string) => {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    return adminRequest<AdminCustomer[]>(`/admin/customers${qs}`);
+  },
+};
+
 export const api = {
   /* Public / marketing */
   listServices: () => request<PublicService[]>('/services/catalog'),
@@ -169,7 +208,7 @@ export const api = {
 
   /* Profile */
   getProfile: () => request<Profile>('/users/me', {}, true),
-  updateProfile: (dto: { name?: string; address?: string; pincode?: string }) =>
+  updateProfile: (dto: { name?: string; address?: string; pincode?: string; location?: string }) =>
     request<Profile>('/users/me', { method: 'PATCH', body: JSON.stringify(dto) }, true),
 
   /* Bookings */
