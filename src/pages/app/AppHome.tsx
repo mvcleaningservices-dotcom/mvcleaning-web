@@ -5,7 +5,9 @@ import {
   LayoutGrid, Wrench, Bug, ChevronDown, Smartphone, Clock, Star,
   ChevronLeft, ChevronRight,
 } from 'lucide-react';
-import { api, type ServiceItem, type PopularService } from '../../api';
+import { api, type ServiceItem, type PopularService, type BannerItem } from '../../api';
+import { BannerSlider } from '../../components/app/BannerSlider';
+import { useServiceDetail } from '../../detail/ServiceDetailContext';
 import { Seo } from '../../components/Seo';
 import { useAuth } from '../../auth/AuthContext';
 import { useHeroBanner } from '../../context/HeroBannerContext';
@@ -82,6 +84,28 @@ export function AppHome() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const { config: hero } = useHeroBanner();
+
+  // V2: admin-managed banners. Each section only appears when a banner is live;
+  // with none uploaded the page looks exactly as before.
+  const { open: openDetail } = useServiceDetail();
+  const [homeBanners, setHomeBanners] = useState<BannerItem[]>([]);
+  const [categoryBanners, setCategoryBanners] = useState<BannerItem[]>([]);
+  const [promoBanners, setPromoBanners] = useState<BannerItem[]>([]);
+  const [showDefaultHero, setShowDefaultHero] = useState(true);
+  const [bannerNote, setBannerNote] = useState('');
+
+  useEffect(() => {
+    api.listBanners('home').then(setHomeBanners).catch(() => {});
+    api.listBanners('category').then(setCategoryBanners).catch(() => {});
+    api.listBanners('promo').then(setPromoBanners).catch(() => {});
+    api.contentConfig().then((c) => setShowDefaultHero(c.showDefaultHomeBanner)).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (!bannerNote) return;
+    const t = setTimeout(() => setBannerNote(''), 4000);
+    return () => clearTimeout(t);
+  }, [bannerNote]);
 
   const [searchParams] = useSearchParams();
   const search = (searchParams.get('q') || '').trim();
@@ -186,6 +210,26 @@ export function AppHome() {
   const showRich = !isSearching && activeCat === 'All';
   const name = profile?.name?.split(' ')[0];
 
+  /** A banner click: open the service, switch category, or open the web link. */
+  const onBannerSelect = (b: BannerItem) => {
+    if (b.linkType === 'service') {
+      const s = services.find((x) => x.id === b.linkValue);
+      if (s) openDetail(s);
+      else setBannerNote('This service isn’t available in your area yet.');
+    } else if (b.linkType === 'category') {
+      if (services.some((x) => x.category === b.linkValue)) {
+        setActiveCat(b.linkValue);
+        servicesRef.current?.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        setBannerNote('These services aren’t available in your area yet.');
+      }
+    } else if (b.linkType === 'external' && /^https:\/\//.test(b.linkValue)) {
+      window.open(b.linkValue, '_blank', 'noopener,noreferrer');
+    }
+  };
+  const bannersFor = (cat: string) => categoryBanners.filter((b) => b.category === cat);
+  const heroPhoto = <img src="/images/hero.webp" alt="Professional home cleaning" loading="lazy" />;
+
   return (
     <>
       <HomeSeo />
@@ -225,9 +269,23 @@ export function AppHome() {
               {hero.badge4 && <span><Clock size={15} /> {hero.badge4}</span>}
             </div>
           </div>
-          <div className="home-hero-img"><img src="/images/hero.webp" alt="Professional home cleaning" loading="lazy" /></div>
+          {/* Photo side of the hero. Uploaded home banners slide here; the
+              original photo stays first unless the admin turned it off. */}
+          {homeBanners.length === 0 ? (
+            <div className="home-hero-img">{heroPhoto}</div>
+          ) : (
+            <div className="home-hero-img has-banners">
+              <BannerSlider
+                variant="hero"
+                banners={homeBanners}
+                leading={showDefaultHero ? heroPhoto : undefined}
+                onSelect={onBannerSelect}
+              />
+            </div>
+          )}
         </section>
       )}
+      {bannerNote && <p className="bnr-note" role="status">{bannerNote}</p>}
 
       {/* Category filter pills — icons + scroll for scale */}
       {categories.length > 1 && (
@@ -273,6 +331,9 @@ export function AppHome() {
       ) : !showRich ? (
         <section className="disc-section">
           <h2 className="disc-h2">{isSearching ? `Results for “${search}”` : activeCat}</h2>
+          {!isSearching && bannersFor(activeCat).length > 0 && (
+            <BannerSlider variant="strip" banners={bannersFor(activeCat)} onSelect={onBannerSelect} />
+          )}
           <div className="svc-grid">{gridServices.map((s) => <ServiceCard key={s.id} service={s} />)}</div>
         </section>
       ) : (
@@ -303,6 +364,14 @@ export function AppHome() {
             </section>
           )}
 
+          {/* V2 promotions — a new section, shown only while a promo banner is live. */}
+          {promoBanners.length > 0 && (
+            <section className="disc-section">
+              <div className="disc-section-head"><Star size={18} /><h2>Offers &amp; updates</h2></div>
+              <BannerSlider variant="strip" banners={promoBanners} onSelect={onBannerSelect} />
+            </section>
+          )}
+
           {/* Category-grouped sections — clean header (no duplicate photo, no redundant count) */}
           {grouped.map(([cat, list]) => {
             const Icon = catIcon(cat);
@@ -315,6 +384,9 @@ export function AppHome() {
                     <h2>{CATEGORY_TAGLINE[cat] || `${cat} services`}</h2>
                   </div>
                 </div>
+                {bannersFor(cat).length > 0 && (
+                  <BannerSlider variant="strip" banners={bannersFor(cat)} onSelect={onBannerSelect} />
+                )}
                 <div className="svc-grid">{list.map((s) => <ServiceCard key={s.id} service={s} />)}</div>
               </section>
             );

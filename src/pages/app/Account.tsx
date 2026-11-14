@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { User, LogOut, ClipboardList, ChevronRight, Wallet as WalletIcon } from 'lucide-react';
 import { api } from '../../api';
 import { useAuth } from '../../auth/AuthContext';
+import { SetPasswordForm } from '../../components/app/SetPasswordForm';
 
 /** Account: profile details (edit) + logout. */
 export function Account() {
@@ -86,8 +87,13 @@ export function Account() {
         <button className="btn-primary" type="submit" disabled={saving} style={{ marginTop: 16 }}>{saving ? 'Saving…' : 'Save changes'}</button>
       </form>
 
-      {/* Confirmed: logging back in needs a fresh SMS OTP, so an accidental tap
-          costs the user a real round-trip — not just a click. */}
+      {/* V2: password login — set or change the password and username. */}
+      <div className="panel acct-form" style={{ marginTop: 16 }}>
+        <SetPasswordForm mode="change" compact onDone={() => {}} />
+      </div>
+
+      {/* Confirmed before logging out, so an accidental tap doesn't sign the
+          user out (they'd need their password, or an OTP, to get back in). */}
       <button
         className="acct-logout"
         onClick={() => {

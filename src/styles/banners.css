@@ -1,0 +1,73 @@
+/* ── Admin-managed banners (client V2) ───────────────────────────────────── */
+.bnr {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+}
+.bnr-track {
+  display: flex;
+  height: 100%;
+  transition: transform 500ms var(--ease-standard, ease);
+}
+.bnr-slide {
+  flex: 0 0 100%;
+  height: 100%;
+}
+.bnr-slide picture,
+.bnr-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.bnr-slide img { object-fit: cover; object-position: center; }
+.bnr-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.bnr-link:focus-visible { outline: 3px solid var(--color-primary-300, #93c5fd); outline-offset: -3px; }
+
+.bnr-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 8px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+.bnr-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: width 200ms ease;
+}
+.bnr-dot.active { width: 20px; background: #fff; }
+
+/* Home hero: same box as the hero photo (about 2:1 on computers).
+   Uploaded home banners: 1000 × 500 for computers, 1200 × 500 for phones. */
+.home-hero-img.has-banners { height: auto; aspect-ratio: 2 / 1; align-self: center; }
+.bnr--hero { width: 100%; height: 100%; border-radius: 0; }
+
+/* Category / promo strips: 1600 × 400 on computers, 1200 × 500 on phones. */
+.bnr--strip { aspect-ratio: 4 / 1; margin-bottom: var(--space-5, 20px); box-shadow: var(--shadow-md, none); }
+
+@media (max-width: 760px) {
+  .home-hero-img.has-banners { aspect-ratio: 12 / 5; }
+  .bnr--strip { aspect-ratio: 12 / 5; }
+}
+
+.bnr-note {
+  margin: -8px 0 var(--space-4, 16px);
+  font-size: 13px;
+  color: var(--color-text-secondary, #475569);
+}

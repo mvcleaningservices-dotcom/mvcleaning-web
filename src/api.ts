@@ -92,6 +92,31 @@ export interface CreateBookingResult {
   };
 }
 
+/** V2: what OTP verify / password login return (hasPassword drives the
+ *  "Create a password" step after sign-up). */
+export interface CustomerSession {
+  accessToken: string;
+  user: AuthUser;
+  hasPassword?: boolean;
+}
+
+/** V2 banners from the admin — only ones live today (IST) come back. */
+export type BannerPlacement = 'home' | 'category' | 'promo';
+export interface BannerItem {
+  id: string;
+  placement: BannerPlacement;
+  category: string;
+  imageDesktop: string;
+  imageMobile: string;
+  alt: string;
+  linkType: 'none' | 'service' | 'category' | 'external';
+  linkValue: string;
+}
+export interface AppContentConfig {
+  helplineNumber: string;
+  showDefaultHomeBanner: boolean;
+}
+
 export interface BlogSummary {
   id: string;
   title: string;
@@ -186,7 +211,7 @@ export const api = {
   requestOtp: (mobile: string) =>
     request<{ message: string; devOtp?: string }>('/auth/otp/request', { method: 'POST', body: JSON.stringify({ mobile }) }),
   verifyOtp: (mobile: string, code: string) =>
-    request<{ accessToken: string; user: AuthUser }>('/auth/otp/verify', { method: 'POST', body: JSON.stringify({ mobile, code }) }),
+    request<CustomerSession>('/auth/otp/verify', { method: 'POST', body: JSON.stringify({ mobile, code }) }),
   me: () => request<{ role: string; user: AuthUser }>('/auth/me', {}, true),
 
   /* Discovery */
@@ -254,4 +279,24 @@ export const api = {
     razorpayPaymentId: string;
     razorpaySignature: string;
   }) => request<{ balance: number }>('/wallet/topup/verify', { method: 'POST', body: JSON.stringify(payload) }, true),
+
+  /* V2: customer password login (sign up with one OTP, then password) */
+  customerLogin: (identifier: string, password: string) =>
+    request<CustomerSession>('/auth/customer/login', { method: 'POST', body: JSON.stringify({ identifier, password }) }),
+  passwordStatus: () =>
+    request<{ hasPassword: boolean; username: string }>('/auth/customer/password', {}, true),
+  setPassword: (password: string, username?: string) =>
+    request<{ hasPassword: boolean; username: string }>(
+      '/auth/customer/password',
+      { method: 'PUT', body: JSON.stringify({ password, username }) },
+      true,
+    ),
+
+  /* V2: admin-managed banners + app config (public) */
+  listBanners: (placement: BannerPlacement, category?: string) => {
+    const q = new URLSearchParams({ placement });
+    if (category) q.set('category', category);
+    return request<BannerItem[]>(`/content/banners?${q.toString()}`);
+  },
+  contentConfig: () => request<AppContentConfig>('/content/config'),
 };
