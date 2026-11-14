@@ -244,7 +244,13 @@ export const api = {
     address: string;
     pincode?: string;
     advanceMethod?: 'razorpay' | 'wallet';
+    /** V2: optional map pin for the home (OpenStreetMap). */
+    lat?: number;
+    lng?: number;
   }) => request<CreateBookingResult>('/bookings', { method: 'POST', body: JSON.stringify(payload) }, true),
+  /** V2: place search for the map pin (OpenStreetMap, via our backend). */
+  geoSearch: (q: string) =>
+    request<{ lat: number; lng: number; label: string }[]>(`/geo/search?q=${encodeURIComponent(q)}`, {}, true),
   testConfirm: (bookingId: string) =>
     request<Booking>('/payments/test-confirm', { method: 'POST', body: JSON.stringify({ bookingId }) }, true),
   /** Hand Razorpay's checkout callback to the server, which verifies the

@@ -6,6 +6,7 @@ import { useAuth } from '../../auth/AuthContext';
 import { useCart } from '../../cart/CartContext';
 import { serviceImage } from '../../lib/serviceImage';
 import { loadRazorpay, openCheckout } from '../../lib/razorpay';
+import { PinPicker, type Pin } from '../../components/app/PinPicker';
 
 const TIME_SLOTS = ['08:00-10:00', '10:00-12:00', '12:00-14:00', '14:00-16:00', '16:00-18:00'];
 
@@ -64,6 +65,8 @@ export function Checkout() {
   const [leadSent, setLeadSent] = useState(false);
   // Cart items dropped because they no longer exist in the live catalogue.
   const [removedNames, setRemovedNames] = useState<string[]>([]);
+  // V2: optional map pin for the home.
+  const [homePin, setHomePin] = useState<Pin | null>(null);
 
   useEffect(() => {
     if (profile?.address) setAddress(profile.address);
@@ -128,6 +131,7 @@ export function Checkout() {
         address: address.trim(),
         pincode: pin,
         advanceMethod: payFromWallet ? 'wallet' : 'razorpay',
+        ...(homePin ? { lat: homePin.lat, lng: homePin.lng } : {}),
       });
       // Remember the area for next time / for the homepage filter.
       setPincode(pin);
@@ -247,6 +251,10 @@ export function Checkout() {
               onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
               aria-invalid={unserved}
             />
+
+            {/* V2: optional map pin (OpenStreetMap). Without it the address is
+                looked up for the team when needed. */}
+            {!unserved && <PinPicker value={homePin} onChange={setHomePin} pincode={pin} />}
 
             {/* Option (b): an unserved area captures a lead rather than dead-ending
                 someone who has already logged in — they've proven real intent. */}
