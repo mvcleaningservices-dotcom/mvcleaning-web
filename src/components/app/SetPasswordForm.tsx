@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../api';
+import { PasswordInput } from './PasswordInput';
 
 export type PasswordMode = 'create' | 'reset' | 'change';
 
@@ -116,29 +117,28 @@ export function SetPasswordForm({
       </p>
 
       <label className="auth-label" htmlFor="pw-new">New password</label>
-      <input
-        id="pw-new"
-        className="auth-input"
-        type={show ? 'text' : 'password'}
-        autoComplete="new-password"
-        placeholder="At least 6 characters"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        style={{ marginBottom: 14 }}
-      />
+      <div style={{ marginBottom: 14 }}>
+        <PasswordInput
+          id="pw-new"
+          autoComplete="new-password"
+          placeholder="At least 6 characters"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          shown={show}
+          onToggle={() => setShow((v) => !v)}
+        />
+      </div>
       <label className="auth-label" htmlFor="pw-confirm">Confirm password</label>
-      <input
+      <PasswordInput
         id="pw-confirm"
-        className="auth-input"
-        type={show ? 'text' : 'password'}
         autoComplete="new-password"
         placeholder="Type it again"
         value={confirm}
         onChange={(e) => setConfirm(e.target.value)}
+        shown={show}
+        onToggle={() => setShow((v) => !v)}
       />
-      <button type="button" className="auth-link" style={{ marginTop: 8 }} onClick={() => setShow((v) => !v)}>
-        {show ? 'Hide passwords' : 'Show passwords'}
-      </button>
+      <div style={{ height: 8 }} />
 
       {error && <p className="auth-error">{error}</p>}
       {saved && <p className="acct-msg">{saved}</p>}

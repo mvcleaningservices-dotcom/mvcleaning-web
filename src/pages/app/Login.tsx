@@ -4,6 +4,7 @@ import { ShieldCheck } from 'lucide-react';
 import { api } from '../../api';
 import { useAuth } from '../../auth/AuthContext';
 import { SetPasswordForm, type PasswordMode } from '../../components/app/SetPasswordForm';
+import { PasswordInput } from '../../components/app/PasswordInput';
 
 /**
  * Consumer login.
@@ -22,7 +23,6 @@ export function Login() {
   // V2: password login + what the OTP is for (sign-up/login or password reset).
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
-  const [showPw, setShowPw] = useState(false);
   const [purpose, setPurpose] = useState<'login' | 'reset'>('login');
   const [pwMode, setPwMode] = useState<PasswordMode>('create');
   // Stay on this page after OTP when a password still has to be set.
@@ -160,19 +160,14 @@ export function Login() {
                 style={{ marginBottom: 16 }}
               />
               <label className="auth-label" htmlFor="password">Password</label>
-              <input
+              <PasswordInput
                 id="password"
-                className="auth-input"
-                type={showPw ? 'text' : 'password'}
                 autoComplete="current-password"
                 placeholder="Your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8 }}>
-                <button type="button" className="auth-link" onClick={() => setShowPw((v) => !v)}>
-                  {showPw ? 'Hide password' : 'Show password'}
-                </button>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
                 <button type="button" className="auth-link" onClick={() => toOtp('reset')}>
                   Forgot password?
                 </button>
