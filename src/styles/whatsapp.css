@@ -1,0 +1,62 @@
+/* WhatsApp button: round with the WhatsApp logo, bottom-RIGHT; "Chat with us"
+   shows to its left on hover / keyboard focus. The height above the bottom
+   (clear of the cart bar) still comes from the existing .whatsapp-fab rules. */
+.whatsapp-fab.wa-round {
+  left: auto;
+  right: 24px;
+  width: 58px;
+  height: 58px;
+  padding: 0;
+  gap: 0;
+  border-radius: 50%;
+  justify-content: center;
+  color: #fff;
+}
+.whatsapp-fab.wa-round svg { display: block; }
+@media (max-width: 640px) {
+  .whatsapp-fab.wa-round { left: auto; right: 12px; width: 54px; height: 54px; }
+}
+/* When the cart bar is showing, lift the button above it so it never covers
+   "Continue to checkout". */
+body:has(.cart-bar) .whatsapp-fab.wa-round {
+  bottom: 88px;
+}
+
+.wa-tip {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translate(6px, -50%);
+  white-space: nowrap;
+  background: #111827;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 12px;
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 150ms ease, transform 150ms ease, visibility 150ms;
+}
+/* Little arrow pointing at the button (on the tip's right side) */
+.wa-tip::before {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 6px solid transparent;
+  border-left-color: #111827;
+}
+.whatsapp-fab.wa-round:hover .wa-tip,
+.whatsapp-fab.wa-round:focus-visible .wa-tip {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(0, -50%);
+}
+/* Touch screens have no hover — keep just the logo there. */
+@media (hover: none) {
+  .wa-tip { display: none; }
+}
