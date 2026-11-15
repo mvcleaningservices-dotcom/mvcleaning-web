@@ -1,4 +1,15 @@
+import { useEffect, useState } from 'react';
+import { api } from '../api';
 import '../styles/whatsapp.css';
+
+/** Fetched once per page load and shared (the button is on every page). */
+let numberPromise: Promise<string | null> | null = null;
+function loadWhatsAppNumber() {
+  numberPromise ??= api.contentConfig()
+    .then((c) => (typeof c.whatsappNumber === 'string' ? c.whatsappNumber : null))
+    .catch(() => null); // keep the built-in number if the setting can't load
+  return numberPromise;
+}
 
 /** The official WhatsApp glyph (single-colour logo). */
 function WhatsAppLogo({ size = 30 }: { size?: number }) {
@@ -14,7 +25,16 @@ function WhatsAppLogo({ size = 30 }: { size?: number }) {
  * Renders fixed at bottom-right, always visible: a round button with the
  * WhatsApp logo; "Chat with us" appears to its left on hover / keyboard focus.
  */
-export function WhatsAppButton({ phone = '918151842101' }: { phone?: string }) {
+export function WhatsAppButton({ phone: fallback = '918151842101' }: { phone?: string }) {
+  // V2: the number is set in admin → Settings (empty there = hide the button).
+  const [phone, setPhone] = useState(fallback);
+  useEffect(() => {
+    let alive = true;
+    loadWhatsAppNumber().then((n) => { if (alive && n !== null) setPhone(n); });
+    return () => { alive = false; };
+  }, []);
+  if (!phone) return null;
+
   const message = encodeURIComponent('Hi! I\'d like to book a cleaning service.');
   const url = `https://wa.me/${phone}?text=${message}`;
 

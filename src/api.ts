@@ -124,6 +124,8 @@ export interface BookingTracking {
 }
 
 export interface AppContentConfig {
+  /** WhatsApp chat number (91XXXXXXXXXX); '' = hidden. */
+  whatsappNumber?: string;
   helplineNumber: string;
   showDefaultHomeBanner: boolean;
 }
