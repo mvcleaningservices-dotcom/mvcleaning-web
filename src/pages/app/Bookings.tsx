@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Navigation } from 'lucide-react';
 import { api, type Booking } from '../../api';
+import { TrackingModal } from '../../components/app/TrackingModal';
 
 const STEPS = ['Placed', 'Assigned', 'Ongoing', 'Done'];
 function stepIndex(status: string) {
@@ -21,6 +23,8 @@ export function Bookings() {
   const [walletAmt, setWalletAmt] = useState<Record<string, string>>({});
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState('');
+  // V2: booking whose tracking popup is open.
+  const [trackingId, setTrackingId] = useState<string | null>(null);
 
   useEffect(() => {
     api.myBookings().then(setList).catch(() => {}).finally(() => setLoading(false));
@@ -99,6 +103,13 @@ export function Bookings() {
                 </div>
               )}
 
+              {/* V2: live tracking while the job is In Progress (OpenStreetMap). */}
+              {b.status === 'in_progress' && (
+                <button type="button" className="btn-secondary bk-track" onClick={() => setTrackingId(b.id)}>
+                  <Navigation size={16} /> Track your professional
+                </button>
+              )}
+
               <div className="bk-foot">
                 <span>Advance ₹{b.advanceAmount} {b.advancePaid ? '· paid' : '· unpaid'}</span>
                 {!settled && due > 0 && <span className="bk-due">₹{due} due after service</span>}
@@ -144,6 +155,7 @@ export function Bookings() {
         })}
       </div>
       {error && <p className="form-error-msg" style={{ marginTop: 12 }}>{error}</p>}
+      {trackingId && <TrackingModal bookingId={trackingId} onClose={() => setTrackingId(null)} />}
     </div>
   );
 }

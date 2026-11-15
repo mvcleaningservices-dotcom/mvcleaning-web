@@ -112,6 +112,17 @@ export interface BannerItem {
   linkType: 'none' | 'service' | 'category' | 'external';
   linkValue: string;
 }
+/** V2 maps: a booking's home pin + professional's live position. */
+export interface BookingTracking {
+  orderNumber: string;
+  status: string;
+  address: string;
+  home: { lat: number; lng: number; source?: string } | null;
+  sharing: boolean;
+  assignedNames: string[];
+  partners: { name: string; lat: number; lng: number; at: string; distanceKm: number | null }[];
+}
+
 export interface AppContentConfig {
   helplineNumber: string;
   showDefaultHomeBanner: boolean;
@@ -248,6 +259,9 @@ export const api = {
     lat?: number;
     lng?: number;
   }) => request<CreateBookingResult>('/bookings', { method: 'POST', body: JSON.stringify(payload) }, true),
+  /** V2: live tracking for one of my bookings (partner shown only while In Progress). */
+  bookingTracking: (bookingId: string) =>
+    request<BookingTracking>(`/bookings/${bookingId}/tracking`, {}, true),
   /** V2: place search for the map pin (OpenStreetMap, via our backend). */
   geoSearch: (q: string) =>
     request<{ lat: number; lng: number; label: string }[]>(`/geo/search?q=${encodeURIComponent(q)}`, {}, true),
